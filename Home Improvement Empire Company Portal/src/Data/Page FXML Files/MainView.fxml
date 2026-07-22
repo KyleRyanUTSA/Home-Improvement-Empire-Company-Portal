@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="application.controller.MainViewController"
+            prefWidth="900"
+            prefHeight="600">
+
+    <top>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="15" right="15" bottom="10" left="15"/>
+            </padding>
+
+            <Label text="Home Improvement Empire"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+            <HBox spacing="10">
+                <TextField fx:id="searchField"
+                           promptText="Search products or categories"
+                           prefWidth="300"/>
+
+                <Button text="Search" onAction="#handleSearch"/>
+                <Button text="Sort by Price" onAction="#handleSortByPrice"/>
+                <Button text="Sort by Availability" onAction="#handleSortByAvailability"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <HBox spacing="15">
+            <padding>
+                <Insets top="10" right="15" bottom="10" left="15"/>
+            </padding>
+
+            <VBox spacing="10" prefWidth="400">
+                <Label text="Products" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <ListView fx:id="productListView" prefHeight="350"/>
+
+                <HBox spacing="10">
+                    <Button text="View Details" onAction="#handleViewDetails"/>
+                    <Button text="Add to Cart" onAction="#handleAddToCart"/>
+                </HBox>
+
+                <Label fx:id="productDetailsLabel"
+                       text="Select a product to view details."
+                       wrapText="true"/>
+            </VBox>
+
+            <VBox spacing="10" prefWidth="400">
+                <Label text="Shopping Cart" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <ListView fx:id="cartListView" prefHeight="300"/>
+
+                <Button text="Remove Selected Item" onAction="#handleRemoveFromCart"/>
+
+                <Separator/>
+
+                <Label fx:id="subtotalLabel" text="Subtotal: $0.00"/>
+                <Label fx:id="taxLabel" text="Tax: $0.00"/>
+                <Label fx:id="totalLabel" text="Total: $0.00"
+                       style="-fx-font-weight: bold;"/>
+
+                <Button text="Checkout" onAction="#handleCheckout"/>
+            </VBox>
+        </HBox>
+    </center>
+
+    <bottom>
+        <VBox>
+            <padding>
+                <Insets top="10" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <Label fx:id="messageLabel" text=""/>
+        </VBox>
+    </bottom>
+
+</BorderPane>
