@@ -1,82 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
+<BorderPane fx:id="mainBorderPane"
+            xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="application.controller.MainViewController"
-            prefWidth="900"
-            prefHeight="600">
+            prefWidth="1200"
+            prefHeight="750"
+            style="-fx-background-color: #f5f5f5;">
 
     <top>
-        <VBox spacing="10">
-            <padding>
-                <Insets top="15" right="15" bottom="10" left="15"/>
-            </padding>
+        <VBox>
+            <HBox spacing="12"
+                  alignment="CENTER_LEFT"
+                  style="-fx-background-color: #1F4D2B;">
+                <padding>
+                    <Insets top="10" right="20" bottom="10" left="20"/>
+                </padding>
 
-            <Label text="Home Improvement Empire"
-                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+                <Label text="Home Improvement Empire"
+                       style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
 
-            <HBox spacing="10">
+                <Region HBox.hgrow="ALWAYS"/>
+
                 <TextField fx:id="searchField"
-                           promptText="Search products or categories"
-                           prefWidth="300"/>
+                           promptText="Search products"
+                           prefWidth="350"/>
 
                 <Button text="Search" onAction="#handleSearch"/>
-                <Button text="Sort by Price" onAction="#handleSortByPrice"/>
-                <Button text="Sort by Availability" onAction="#handleSortByAvailability"/>
+                <Button text="Sort Price" onAction="#handleSortByPrice"/>
+                <Button text="In Stock First" onAction="#handleSortByAvailability"/>
+
+                <Button fx:id="cartButton"
+                        text="Cart (0)"
+                        onAction="#handleShowCart"
+                        style="-fx-font-weight: bold;"/>
             </HBox>
+
+            <Label text="Featured Products"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 18 0 8 30;"/>
         </VBox>
     </top>
 
     <center>
-        <HBox spacing="15">
-            <padding>
-                <Insets top="10" right="15" bottom="10" left="15"/>
-            </padding>
-
-            <VBox spacing="10" prefWidth="400">
-                <Label text="Products" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-                <ListView fx:id="productListView" prefHeight="350"/>
-
-                <HBox spacing="10">
-                    <Button text="View Details" onAction="#handleViewDetails"/>
-                    <Button text="Add to Cart" onAction="#handleAddToCart"/>
-                </HBox>
-
-                <Label fx:id="productDetailsLabel"
-                       text="Select a product to view details."
-                       wrapText="true"/>
-            </VBox>
-
-            <VBox spacing="10" prefWidth="400">
-                <Label text="Shopping Cart" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-                <ListView fx:id="cartListView" prefHeight="300"/>
-
-                <Button text="Remove Selected Item" onAction="#handleRemoveFromCart"/>
-
-                <Separator/>
-
-                <Label fx:id="subtotalLabel" text="Subtotal: $0.00"/>
-                <Label fx:id="taxLabel" text="Tax: $0.00"/>
-                <Label fx:id="totalLabel" text="Total: $0.00"
-                       style="-fx-font-weight: bold;"/>
-
-                <Button text="Checkout" onAction="#handleCheckout"/>
-            </VBox>
-        </HBox>
+        <ScrollPane fx:id="catalogScrollPane"
+                    fitToWidth="true"
+                    style="-fx-background-color: transparent;">
+            <content>
+                <TilePane fx:id="productTilePane"
+                          hgap="25"
+                          vgap="25"
+                          prefColumns="4">
+                    <padding>
+                        <Insets top="15" right="30" bottom="30" left="30"/>
+                    </padding>
+                </TilePane>
+            </content>
+        </ScrollPane>
     </center>
 
     <bottom>
-        <VBox>
-            <padding>
-                <Insets top="10" right="15" bottom="15" left="15"/>
-            </padding>
-
-            <Label fx:id="messageLabel" text=""/>
-        </VBox>
+        <Label fx:id="messageLabel"
+               text=""
+               wrapText="true"
+               style="-fx-padding: 10 20 15 20; -fx-text-fill: #333333;"/>
     </bottom>
 
 </BorderPane>

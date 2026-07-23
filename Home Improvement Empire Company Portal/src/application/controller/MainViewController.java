@@ -5,181 +5,284 @@ import application.model.Product;
 import application.model.ProductLoader;
 import application.model.ShoppingCart;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-// Controller for the main customer store screen
+// Controller for the main shopping page
 public class MainViewController {
+
+    @FXML
+    private BorderPane mainBorderPane;
 
     @FXML
     private TextField searchField;
 
     @FXML
-    private ListView<Product> productListView;
+    private TilePane productTilePane;
 
     @FXML
-    private ListView<CartItem> cartListView;
+    private ScrollPane catalogScrollPane;
 
     @FXML
-    private Label productDetailsLabel;
-
-    @FXML
-    private Label subtotalLabel;
-
-    @FXML
-    private Label taxLabel;
-
-    @FXML
-    private Label totalLabel;
+    private Button cartButton;
 
     @FXML
     private Label messageLabel;
 
     private List<Product> allProducts;
+    private List<Product> shownProducts;
     private ShoppingCart cart;
 
-    // Runs when the FXML screen opens
+    // Runs when the main screen opens
     @FXML
     private void initialize() {
         cart = new ShoppingCart();
 
-        // Load products from the CSV file
+        // Load products from CSV
         allProducts = ProductLoader.loadProducts();
+        shownProducts = new ArrayList<>(allProducts);
 
-        showProducts(allProducts);
-        updateCartDisplay();
-
-        // Double click a product to add it to the cart
-        productListView.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                handleAddToCart();
-            }
-        });
-
-        // Right click a cart item to remove one quantity
-        cartListView.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.SECONDARY) {
-                handleRemoveFromCart();
-            }
-        });
-
+        showCatalogPage();
         messageLabel.setText("Welcome to Home Improvement Empire!");
     }
 
-    // Shows products in the product list
-    private void showProducts(List<Product> products) {
-        ObservableList<Product> productObservableList = FXCollections.observableArrayList(products);
-        productListView.setItems(productObservableList);
+    // Shows the main shopping catalog
+    private void showCatalogPage() {
+        productTilePane.getChildren().clear();
+
+        for (Product product : shownProducts) {
+            productTilePane.getChildren().add(createProductCard(product));
+        }
+
+        mainBorderPane.setCenter(catalogScrollPane);
+    }
+
+    // Creates one product card for the catalog
+    private VBox createProductCard(Product product) {
+        VBox card = new VBox(8);
+        card.setPrefWidth(235);
+        card.setPadding(new Insets(12));
+
+        card.setStyle(
+                "-fx-background-color: white;" +
+                        "-fx-border-color: #dddddd;" +
+                        "-fx-border-radius: 6;" +
+                        "-fx-background-radius: 6;"
+        );
+
+        // Image placeholder for now
+        Label imageBox = new Label("Product Image");
+        imageBox.setPrefSize(210, 130);
+        imageBox.setStyle(
+                "-fx-background-color: #eeeeee;" +
+                        "-fx-border-color: #cccccc;" +
+                        "-fx-alignment: center;" +
+                        "-fx-text-fill: #666666;"
+        );
+
+        Label nameLabel = new Label(product.getName());
+        nameLabel.setWrapText(true);
+        nameLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0046be;");
+
+        Label categoryLabel = new Label(product.getCategory());
+        categoryLabel.setStyle("-fx-text-fill: #666666;");
+
+        Label priceLabel = new Label("$" + String.format("%.2f", product.getPrice()));
+        priceLabel.setStyle("-fx-font-size: 17px; -fx-font-weight: bold;");
+
+        String stockText = product.isAvailable() ? "In Stock" : "Out of Stock";
+        Label stockLabel = new Label(stockText);
+
+        if (product.isAvailable()) {
+            stockLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+        } else {
+            stockLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        }
+
+        Button addButton = new Button(product.isAvailable() ? "Add to Cart" : "Unavailable");
+        addButton.setMaxWidth(Double.MAX_VALUE);
+
+        if (product.isAvailable()) {
+            addButton.setStyle("-fx-background-color: #FFD814; -fx-font-weight: bold;");
+        } else {
+            addButton.setDisable(true);
+        }
+
+        // Add item when button is clicked
+        addButton.setOnAction(event -> addProductToCart(product));
+
+        // Show details when card is clicked
+        card.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                showProductDetails(product);
+            }
+
+            // Double click also adds to cart
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                addProductToCart(product);
+            }
+        });
+
+        card.getChildren().addAll(
+                imageBox,
+                nameLabel,
+                categoryLabel,
+                priceLabel,
+                stockLabel,
+                addButton
+        );
+
+        return card;
+    }
+
+    // Adds a product to the shopping cart
+    private void addProductToCart(Product product) {
+        if (!product.isAvailable()) {
+            messageLabel.setText(product.getName() + " is out of stock.");
+            return;
+        }
+
+        cart.addProduct(product);
+        updateCartButton();
+
+        messageLabel.setText(product.getName() + " added to cart.");
+    }
+
+    // Shows basic product info at the bottom
+    private void showProductDetails(Product product) {
+        String availability = product.isAvailable() ? "In Stock" : "Out of Stock";
+
+        messageLabel.setText(
+                product.getName()
+                        + " | " + product.getCategory()
+                        + " | $" + String.format("%.2f", product.getPrice())
+                        + " | " + availability
+                        + " | " + product.getDescription()
+        );
     }
 
     // Searches products by name or category
     @FXML
     private void handleSearch() {
         String searchText = searchField.getText().toLowerCase();
-        List<Product> results = new ArrayList<>();
+        shownProducts = new ArrayList<>();
 
         for (Product product : allProducts) {
             if (product.getName().toLowerCase().contains(searchText)
                     || product.getCategory().toLowerCase().contains(searchText)) {
-                results.add(product);
+                shownProducts.add(product);
             }
         }
 
-        showProducts(results);
+        showCatalogPage();
         messageLabel.setText("Search results shown.");
     }
 
-    // Sorts products by lowest price first
+    // Sorts current products by price
     @FXML
     private void handleSortByPrice() {
-        List<Product> sortedProducts = new ArrayList<>(productListView.getItems());
+        shownProducts.sort(Comparator.comparingDouble(Product::getPrice));
 
-        sortedProducts.sort(Comparator.comparingDouble(Product::getPrice));
-
-        showProducts(sortedProducts);
+        showCatalogPage();
         messageLabel.setText("Products sorted by price.");
     }
 
-    // Sorts products with in-stock items first
+    // Sorts current products with available items first
     @FXML
     private void handleSortByAvailability() {
-        List<Product> sortedProducts = new ArrayList<>(productListView.getItems());
+        shownProducts.sort((p1, p2) -> Boolean.compare(p2.isAvailable(), p1.isAvailable()));
 
-        sortedProducts.sort((p1, p2) -> Boolean.compare(p2.isAvailable(), p1.isAvailable()));
-
-        showProducts(sortedProducts);
-        messageLabel.setText("Available products shown first.");
+        showCatalogPage();
+        messageLabel.setText("In-stock products shown first.");
     }
 
-    // Shows information about the selected product
+    // Opens the cart page
     @FXML
-    private void handleViewDetails() {
-        Product selectedProduct = productListView.getSelectionModel().getSelectedItem();
+    private void handleShowCart() {
+        showCartPage();
+    }
 
-        if (selectedProduct == null) {
-            messageLabel.setText("Please select a product first.");
-            return;
-        }
+    // Builds the cart page
+    private void showCartPage() {
+        VBox cartPage = new VBox(15);
+        cartPage.setPadding(new Insets(25));
+        cartPage.setStyle("-fx-background-color: white;");
 
-        String availability = selectedProduct.isAvailable() ? "In Stock" : "Out of Stock";
+        Label titleLabel = new Label("Your Shopping Cart");
+        titleLabel.setStyle("-fx-font-size: 26px; -fx-font-weight: bold;");
 
-        productDetailsLabel.setText(
-                "Name: " + selectedProduct.getName()
-                        + "\nCategory: " + selectedProduct.getCategory()
-                        + "\nPrice: $" + String.format("%.2f", selectedProduct.getPrice())
-                        + "\nAvailability: " + availability
-                        + "\nDescription: " + selectedProduct.getDescription()
+        ListView<CartItem> cartListView = new ListView<>();
+        cartListView.setItems(FXCollections.observableArrayList(cart.getItems()));
+        cartListView.setPrefHeight(320);
+
+        // Right click removes one quantity
+        cartListView.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                CartItem selectedItem = cartListView.getSelectionModel().getSelectedItem();
+
+                if (selectedItem != null) {
+                    cart.removeOneProduct(selectedItem);
+                    showCartPage();
+                    updateCartButton();
+                    messageLabel.setText("Item removed from cart.");
+                }
+            }
+        });
+
+        Button removeButton = new Button("Remove Selected Item");
+        removeButton.setOnAction(event -> {
+            CartItem selectedItem = cartListView.getSelectionModel().getSelectedItem();
+
+            if (selectedItem == null) {
+                messageLabel.setText("Please select a cart item first.");
+                return;
+            }
+
+            cart.removeOneProduct(selectedItem);
+            showCartPage();
+            updateCartButton();
+            messageLabel.setText("Item removed from cart.");
+        });
+
+        Label subtotalLabel = new Label("Subtotal: $" + String.format("%.2f", cart.getSubtotal()));
+        Label taxLabel = new Label("Tax: $" + String.format("%.2f", cart.getTax()));
+        Label totalLabel = new Label("Total: $" + String.format("%.2f", cart.getTotal()));
+        totalLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        Button checkoutButton = new Button("Checkout");
+        checkoutButton.setStyle("-fx-background-color: #f5f5f5; -fx-font-weight: bold;");
+        checkoutButton.setPrefWidth(180);
+        checkoutButton.setOnAction(event -> handleCheckout());
+
+        Button backButton = new Button("Back to Shopping");
+        backButton.setOnAction(event -> {
+            showCatalogPage();
+            messageLabel.setText("Back to shopping.");
+        });
+
+        cartPage.getChildren().addAll(
+                titleLabel,
+                cartListView,
+                removeButton,
+                subtotalLabel,
+                taxLabel,
+                totalLabel,
+                checkoutButton,
+                backButton
         );
 
-        messageLabel.setText("Product details shown.");
+        mainBorderPane.setCenter(cartPage);
+        messageLabel.setText("Cart opened.");
     }
 
-    // Adds selected product to cart
-    @FXML
-    private void handleAddToCart() {
-        Product selectedProduct = productListView.getSelectionModel().getSelectedItem();
-
-        if (selectedProduct == null) {
-            messageLabel.setText("Please select a product first.");
-            return;
-        }
-
-        if (!selectedProduct.isAvailable()) {
-            messageLabel.setText("This item is out of stock.");
-            return;
-        }
-
-        cart.addProduct(selectedProduct);
-        updateCartDisplay();
-
-        messageLabel.setText(selectedProduct.getName() + " added to cart.");
-    }
-
-    // Removes one quantity from selected cart item
-    @FXML
-    private void handleRemoveFromCart() {
-        CartItem selectedItem = cartListView.getSelectionModel().getSelectedItem();
-
-        if (selectedItem == null) {
-            messageLabel.setText("Please select a cart item first.");
-            return;
-        }
-
-        cart.removeOneProduct(selectedItem);
-        updateCartDisplay();
-
-        messageLabel.setText("Item removed from cart.");
-    }
-
-    // Simple checkout placeholder for now
+    // Simple checkout placeholder
     @FXML
     private void handleCheckout() {
         if (cart.getItems().isEmpty()) {
@@ -187,17 +290,21 @@ public class MainViewController {
             return;
         }
 
-        messageLabel.setText("Order placed! Checkout screen can be added later.");
         cart.clearCart();
-        updateCartDisplay();
+        updateCartButton();
+        showCatalogPage();
+
+        messageLabel.setText("Order placed!");
     }
 
-    // Updates the cart list and price totals
-    private void updateCartDisplay() {
-        cartListView.setItems(FXCollections.observableArrayList(cart.getItems()));
+    // Updates cart button count
+    private void updateCartButton() {
+        int totalItems = 0;
 
-        subtotalLabel.setText("Subtotal: $" + String.format("%.2f", cart.getSubtotal()));
-        taxLabel.setText("Tax: $" + String.format("%.2f", cart.getTax()));
-        totalLabel.setText("Total: $" + String.format("%.2f", cart.getTotal()));
+        for (CartItem item : cart.getItems()) {
+            totalItems += item.getQuantity();
+        }
+
+        cartButton.setText("Cart (" + totalItems + ")");
     }
 }
