@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 public class CredentialLoader {
 	
+	
+	
+	
 	public static ArrayList<Credential> loadCredentials() {
 		InputStream is = CredentialLoader.class.getResourceAsStream("/Data/Credentials/Credentials");
 		ArrayList<Credential> toReturn = new ArrayList<Credential>();

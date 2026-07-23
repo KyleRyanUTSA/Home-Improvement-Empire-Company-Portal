@@ -13,7 +13,8 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/Data/Page FXML Files/HIELS.fxml"));
+			SceneManager.setPrimaryStage(primaryStage);
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/Data/views/HIELS.fxml"));
 			Parent root = loader.load();
 			primaryStage.setScene(new Scene(root));
 			primaryStage.show();
