@@ -1,10 +1,10 @@
-productId,name,description,price,category,available
-P001,Hammer,Basic steel hammer for home projects,14.99,Tools,true
-P002,Screwdriver Set,Set of different screwdriver sizes,19.99,Tools,true
-P003,Paint Brush,Brush for indoor and outdoor painting,6.49,Paint,true
-P004,Cordless Drill,Battery powered drill for home repairs,79.99,Power Tools,true
-P005,Ladder,Foldable ladder for reaching high areas,129.99,Hardware,false
-P006,Garden Hose,Outdoor hose for yard and garden use,24.99,Garden,true
-P007,Work Gloves,Gloves for yard work and repairs,12.99,Safety,true
-P008,Toolbox,Storage box for tools and hardware,34.99,Storage,true
-P009,Leaf Blower,Electric blower for cleaning leaves,59.99,Garden,true
+productId,name,description,price,category,available,imageName
+P001,Hammer,Basic steel hammer for home projects,14.99,Tools,true,hammer.png
+P002,Screwdriver Set,Set of different screwdriver sizes,19.99,Tools,true,screwdriver.png
+P003,Paint Brush,Brush for indoor and outdoor painting,6.49,Paint,true,paintbrush.png
+P004,Cordless Drill,Battery powered drill for home repairs,79.99,Power Tools,true,cordlessdrill.png
+P005,Ladder,Foldable ladder for reaching high areas,129.99,Hardware,false,ladder.png
+P006,Garden Hose,Outdoor hose for yard and garden use,24.99,Garden,true,gardenhose.png
+P007,Work Gloves,Gloves for yard work and repairs,12.99,Safety,true,workgloves.png
+P008,Toolbox,Storage box for tools and hardware,34.99,Storage,true,toolbox.png
+P009,Leaf Blower,Electric blower for cleaning leaves,59.99,Garden,true,leafblower.png
