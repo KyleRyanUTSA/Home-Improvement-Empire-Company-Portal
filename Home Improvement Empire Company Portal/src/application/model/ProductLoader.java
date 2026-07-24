@@ -40,12 +40,8 @@ public class ProductLoader {
                 double price = Double.parseDouble(parts[3].trim());
                 String category = parts[4].trim();
                 boolean available = Boolean.parseBoolean(parts[5].trim());
-                String imageName = parts.length > 6
-                        ? parts[6].trim()
-                        : "default-product.png";
 
-
-                Product product = new Product(productId, name, description, price, category, available, imageName);
+                Product product = new Product(productId, name, description, price, category, available);
                 products.add(product);
             }
 
