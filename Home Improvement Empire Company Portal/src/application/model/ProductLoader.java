@@ -30,7 +30,7 @@ public class ProductLoader {
                 String[] parts = line.split(",");
 
                 // Makes sure the row has all needed values
-                if (parts.length < 6) {
+                if (parts.length < 7) {
                     continue;
                 }
 
@@ -40,8 +40,9 @@ public class ProductLoader {
                 double price = Double.parseDouble(parts[3].trim());
                 String category = parts[4].trim();
                 boolean available = Boolean.parseBoolean(parts[5].trim());
+                String imageName = parts[6].trim();
 
-                Product product = new Product(productId, name, description, price, category, available);
+                Product product = new Product(productId, name, description, price, category, available,imageName);
                 products.add(product);
             }
 
