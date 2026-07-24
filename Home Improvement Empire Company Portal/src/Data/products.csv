@@ -1,5 +1,5 @@
 productId,name,description,price,category,available
-P001,Hammer,Basic steel hammer for home projects,14.99,Tools,true
+P001,Hammer,Basic steel hammer for home projects,14.99,Tools,true,hammer.jpg
 P002,Screwdriver Set,Set of different screwdriver sizes,19.99,Tools,true
 P003,Paint Brush,Brush for indoor and outdoor painting,6.49,Paint,true
 P004,Cordless Drill,Battery powered drill for home repairs,79.99,Power Tools,true
