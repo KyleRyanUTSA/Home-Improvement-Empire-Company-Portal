@@ -1,8 +1,20 @@
 package application.model;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+
+import javafx.scene.shape.Path;
 
 public class CredentialLoader {
 	
@@ -29,4 +41,17 @@ public class CredentialLoader {
         }
 		return toReturn;
     }
+	public static void saveCredentials(String userName, String password) {
+		URL credentialsURL  = CredentialLoader.class.getResource("/Data/Credentials/Credentials");
+		try {
+			URI credentialsURI = credentialsURL.toURI();
+			Writer credWriter = Files.newBufferedWriter(Paths.get(credentialsURI),StandardOpenOption.CREATE,StandardOpenOption.APPEND);
+			credWriter.write("\n"+userName+"|"+password);
+			
+			credWriter.close();
+			
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	}
 }

@@ -30,4 +30,14 @@ public class LoginController {
 		}
 		
 	}
+	@FXML
+	private void handleSignUpAction(ActionEvent event) {
+		if(!(CredentialVerifier.verifyCredential(new Credential(usernameField.getText(),passwordField.getText())))) {
+			CredentialLoader.saveCredentials(usernameField.getText(),passwordField.getText());
+			testingLabel.setText("Sign Up successful");
+		}
+		else {
+			testingLabel.setText("Sign Up failed, account already exists");
+		}
+	}
 }
