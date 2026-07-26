@@ -41,7 +41,22 @@ public class ProductLoader {
                 String category = parts[4].trim();
                 boolean available = Boolean.parseBoolean(parts[5].trim());
 
-                Product product = new Product(productId, name, description, price, category, available);
+                // Uses the image filename from the CSV
+                // Uses the fallback image if the filename is missing
+                String imageName = parts.length > 6
+                        ? parts[6].trim()
+                        : "default-product.jpg";
+
+                Product product = new Product(
+                        productId,
+                        name,
+                        description,
+                        price,
+                        category,
+                        available,
+                        imageName
+                );
+
                 products.add(product);
             }
 

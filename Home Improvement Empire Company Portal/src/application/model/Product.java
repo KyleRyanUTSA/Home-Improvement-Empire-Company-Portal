@@ -9,14 +9,24 @@ public class Product {
     private double price;
     private String category;
     private boolean available;
+    private String imageName;
 
-    public Product(String productId, String name, String description, double price, String category, boolean available) {
+    public Product(
+            String productId,
+            String name,
+            String description,
+            double price,
+            String category,
+            boolean available,
+            String imageName
+    ) {
         this.productId = productId;
         this.name = name;
         this.description = description;
         this.price = price;
         this.category = category;
         this.available = available;
+        this.imageName = imageName;
     }
 
     // Getters keep the fields protected but still usable
@@ -44,10 +54,19 @@ public class Product {
         return available;
     }
 
+    public String getImageName() {
+        return imageName;
+    }
+
     // This controls how products show up inside the ListView
     @Override
     public String toString() {
         String stockText = available ? "In Stock" : "Out of Stock";
-        return name + " - $" + String.format("%.2f", price) + " - " + stockText;
+
+        return name
+                + " - $"
+                + String.format("%.2f", price)
+                + " - "
+                + stockText;
     }
 }

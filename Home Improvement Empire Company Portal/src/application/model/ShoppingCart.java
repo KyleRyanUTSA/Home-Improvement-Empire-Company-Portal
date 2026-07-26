@@ -8,9 +8,11 @@ public class ShoppingCart {
 
     private List<CartItem> items;
     private final double TAX_RATE = 0.0825;
+    private double discountRate;
 
     public ShoppingCart() {
         items = new ArrayList<>();
+        discountRate = 0.0;
     }
 
     public List<CartItem> getItems() {
@@ -42,7 +44,7 @@ public class ShoppingCart {
         }
     }
 
-    // Adds up all cart items before tax
+    // Adds up all cart items before discount and tax
     public double getSubtotal() {
         double subtotal = 0;
 
@@ -53,18 +55,56 @@ public class ShoppingCart {
         return subtotal;
     }
 
-    // Calculates 8.25% tax
-    public double getTax() {
-        return getSubtotal() * TAX_RATE;
+    // Returns the amount removed by the discount
+    public double getDiscountAmount() {
+        return getSubtotal() * discountRate;
     }
 
-    // Final total after tax
+    // Returns the subtotal after discount
+    public double getDiscountedSubtotal() {
+        return getSubtotal() - getDiscountAmount();
+    }
+
+    // Calculates 8.25% tax after discount
+    public double getTax() {
+        return getDiscountedSubtotal() * TAX_RATE;
+    }
+
+    // Final total after discount and tax
     public double getTotal() {
-        return getSubtotal() + getTax();
+        return getDiscountedSubtotal() + getTax();
+    }
+
+    // Applies a discount code
+    public boolean applyDiscountCode(String code) {
+        if (code == null) {
+            return false;
+        }
+
+        String cleanedCode = code.trim().toUpperCase();
+
+        if (cleanedCode.equals("SAVE10")) {
+            discountRate = 0.10;
+            return true;
+        }
+
+        if (cleanedCode.equals("SAVE20")) {
+            discountRate = 0.20;
+            return true;
+        }
+
+        discountRate = 0.0;
+        return false;
+    }
+
+    // Returns the current discount percentage as a decimal
+    public double getDiscountRate() {
+        return discountRate;
     }
 
     // Clears cart after checkout
     public void clearCart() {
         items.clear();
+        discountRate = 0.0;
     }
 }

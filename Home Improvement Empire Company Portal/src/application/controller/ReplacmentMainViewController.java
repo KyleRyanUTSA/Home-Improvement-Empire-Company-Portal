@@ -21,7 +21,7 @@ import java.util.List;
 
 
 // Controller for the main shopping page
-public class MainViewController {
+public class ReplacmentMainViewController {
 
 
     @FXML
@@ -168,7 +168,7 @@ public class MainViewController {
                     getClass()
                     .getResourceAsStream(
                        "/images/" 
-                       + product.getImageName()
+                       //+ product.getImageName()
                     );
 
 
