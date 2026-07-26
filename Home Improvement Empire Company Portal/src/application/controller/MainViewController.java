@@ -46,6 +46,10 @@ public class MainViewController {
     private List<Product> shownProducts;
     private ShoppingCart cart;
 
+    // Stores the selected checkout option
+    private String fulfillmentOption = "";
+    private String deliveryAddress = "";
+
     // Runs when the main screen opens
     @FXML
     private void initialize() {
@@ -319,7 +323,7 @@ public class MainViewController {
         cartListView.setItems(
                 FXCollections.observableArrayList(cart.getItems())
         );
-        cartListView.setPrefHeight(320);
+        cartListView.setPrefHeight(260);
 
         // Right click removes one quantity
         cartListView.setOnMouseClicked(event -> {
@@ -395,6 +399,83 @@ public class MainViewController {
                 applyDiscountButton
         );
 
+        // Delivery or pickup section
+        Label fulfillmentLabel = new Label(
+                "Choose delivery or store pickup:"
+        );
+        fulfillmentLabel.setStyle("-fx-font-weight: bold;");
+
+        RadioButton deliveryButton = new RadioButton("Delivery");
+        RadioButton pickupButton = new RadioButton("Store Pickup");
+
+        ToggleGroup fulfillmentGroup = new ToggleGroup();
+        deliveryButton.setToggleGroup(fulfillmentGroup);
+        pickupButton.setToggleGroup(fulfillmentGroup);
+
+        // Restore the selected option when the cart refreshes
+        if (fulfillmentOption.equals("Delivery")) {
+            deliveryButton.setSelected(true);
+        } else if (fulfillmentOption.equals("Pickup")) {
+            pickupButton.setSelected(true);
+        }
+
+        HBox fulfillmentBox = new HBox(
+                20,
+                deliveryButton,
+                pickupButton
+        );
+
+        // Delivery address fields
+        TextField streetField = new TextField();
+        streetField.setPromptText("Street address");
+
+        TextField cityField = new TextField();
+        cityField.setPromptText("City");
+
+        TextField stateField = new TextField();
+        stateField.setPromptText("State");
+        stateField.setPrefWidth(90);
+
+        TextField zipField = new TextField();
+        zipField.setPromptText("ZIP code");
+        zipField.setPrefWidth(110);
+
+        HBox cityStateZipBox = new HBox(
+                10,
+                cityField,
+                stateField,
+                zipField
+        );
+
+        VBox addressBox = new VBox(
+                8,
+                streetField,
+                cityStateZipBox
+        );
+
+        // Only show address fields when delivery is selected
+        addressBox.setVisible(deliveryButton.isSelected());
+        addressBox.setManaged(deliveryButton.isSelected());
+
+        deliveryButton.setOnAction(event -> {
+            fulfillmentOption = "Delivery";
+
+            addressBox.setVisible(true);
+            addressBox.setManaged(true);
+
+            messageLabel.setText("Delivery selected.");
+        });
+
+        pickupButton.setOnAction(event -> {
+            fulfillmentOption = "Pickup";
+            deliveryAddress = "";
+
+            addressBox.setVisible(false);
+            addressBox.setManaged(false);
+
+            messageLabel.setText("Store pickup selected.");
+        });
+
         Label subtotalLabel = new Label(
                 "Subtotal: $" +
                         String.format(
@@ -439,9 +520,39 @@ public class MainViewController {
         );
 
         checkoutButton.setPrefWidth(180);
-        checkoutButton.setOnAction(
-                event -> handleCheckout()
-        );
+
+        checkoutButton.setOnAction(event -> {
+            if (deliveryButton.isSelected()) {
+                String street = streetField.getText().trim();
+                String city = cityField.getText().trim();
+                String state = stateField.getText().trim();
+                String zip = zipField.getText().trim();
+
+                if (street.isEmpty()
+                        || city.isEmpty()
+                        || state.isEmpty()
+                        || zip.isEmpty()) {
+
+                    messageLabel.setText(
+                            "Please complete the delivery address."
+                    );
+                    return;
+                }
+
+                fulfillmentOption = "Delivery";
+
+                deliveryAddress =
+                        street + ", "
+                                + city + ", "
+                                + state + " "
+                                + zip;
+            } else if (pickupButton.isSelected()) {
+                fulfillmentOption = "Pickup";
+                deliveryAddress = "";
+            }
+
+            handleCheckout();
+        });
 
         Button backButton = new Button("Back to Shopping");
 
@@ -455,6 +566,9 @@ public class MainViewController {
                 cartListView,
                 removeButton,
                 discountBox,
+                fulfillmentLabel,
+                fulfillmentBox,
+                addressBox,
                 subtotalLabel,
                 discountLabel,
                 taxLabel,
@@ -463,11 +577,15 @@ public class MainViewController {
                 backButton
         );
 
-        mainBorderPane.setCenter(cartPage);
+        // Allows the cart page to scroll when address fields are shown
+        ScrollPane cartScrollPane = new ScrollPane(cartPage);
+        cartScrollPane.setFitToWidth(true);
+
+        mainBorderPane.setCenter(cartScrollPane);
         messageLabel.setText("Cart opened.");
     }
 
-    // Simple checkout placeholder
+    // Completes the checkout
     @FXML
     private void handleCheckout() {
         if (cart.getItems().isEmpty()) {
@@ -475,11 +593,33 @@ public class MainViewController {
             return;
         }
 
+        if (fulfillmentOption.isEmpty()) {
+            messageLabel.setText(
+                    "Please choose delivery or store pickup."
+            );
+            return;
+        }
+
+        String confirmationMessage;
+
+        if (fulfillmentOption.equals("Delivery")) {
+            confirmationMessage =
+                    "Order placed for delivery to "
+                            + deliveryAddress
+                            + "!";
+        } else {
+            confirmationMessage =
+                    "Order placed for store pickup!";
+        }
+
         cart.clearCart();
+        fulfillmentOption = "";
+        deliveryAddress = "";
+
         updateCartButton();
         showCatalogPage();
 
-        messageLabel.setText("Order placed!");
+        messageLabel.setText(confirmationMessage);
     }
 
     // Updates cart button count
