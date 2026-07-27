@@ -8,6 +8,8 @@ import application.model.Credential;
 import application.model.CredentialLoader;
 import application.model.CredentialVerifier;
 import javafx.event.ActionEvent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class LoginController {
 	@FXML 
@@ -16,10 +18,20 @@ public class LoginController {
 	private TextField usernameField;
 	@FXML 
 	private PasswordField passwordField;
+	@FXML
+	private ImageView logoImage;
 	@FXML 
 	private void initialize() {
 		testingLabel.setText("");
 	}
+	@FXML
+	private void initialize() {
+        testingLabel.setText("");
+
+        Image image = new Image(getClass().getResourceAsStream("/Data/images/.jpg"));
+        logoImage.setImage(image);
+    }
+
 	@FXML
 	private void handleSignInAction(ActionEvent event) {
 		if(CredentialVerifier.verifyCredential(new Credential(usernameField.getText(),passwordField.getText()))) {
