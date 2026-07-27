@@ -6,10 +6,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.Alert;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+
 import application.SceneManager;
+import application.model.CartItem;
+imprt application.model.ShoppingCart;
 
 public class CheckoutController {
     
@@ -42,6 +48,18 @@ public class CheckoutController {
     private Button continueShoppingButton;
     @FXML
     private Button cancelButton;
+
+    @FXML
+    private TextField cardNameField;
+
+    @FXML
+    private TextField cardNumberField;
+
+    @FXML
+    private TextField expirationField;
+
+    @FXML
+    private PasswordField cvvField;
     
     private ObservableList<CheckoutItem> cartItems;
     private double subtotal = 0.0;
@@ -116,14 +134,69 @@ public class CheckoutController {
             promoCodeField.setText("Invalid Promo Code");
         }
     }
-    
+
+    private boolean processPayment() {
+
+    String cardName = cardNameField.getText().trim();
+    String cardNumber = cardNumberField.getText().trim();
+    String expiration = expirationField.getText().trim();
+    String cvv = cvvField.getText().trim();
+
+
+    if(cardName.isEmpty() || cardNumber.isEmpty() || expiration.isEmpty() || cvv.isEmpty()) {
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Payment Error");
+        alert.setHeaderText(null);
+        alert.setContentText("Please complete all payment fields.");
+        alert.showAndWait();
+
+        return false;
+    }
+
+
+    if(!cardNumber.matches("\\d{16}")) {
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid Card");
+        alert.setHeaderText(null);
+        alert.setContentText("Card number must contain 16 digits.");
+        alert.showAndWait();
+
+        return false;
+    }
+
+
+    if(!cvv.matches("\\d{3}")) {
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid CVV");
+        alert.setHeaderText(null);
+        alert.setContentText("CVV must contain 3 digits.");
+        alert.showAndWait();
+
+        return false;
+    }
+
+
+    return true;
+}
     /**
      * Handle complete checkout
      */
     @FXML
     private void handleCompleteCheckout() {
         if (cartItems.isEmpty()) {
-            System.out.println("Cart is empty");
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Empty Cart");
+            alert.setHeaderText(null);
+            alert.setContentText("Your cart is empty.");
+            alert.showAndWait();
+
+            return;
+        }
+
+        if (!processPayment()) {
             return;
         }
         
@@ -131,6 +204,10 @@ public class CheckoutController {
         System.out.println("Processing checkout...");
         System.out.println("Subtotal: $" + String.format("%.2f", subtotal));
         System.out.println("Total Items: " + cartItems.size());
+
+        if(shoppingCart != null) {
+            shoppingCart.clearCart();
+        }
         
         // TODO: Implement actual checkout logic (payment processing, order creation, etc.)
         
@@ -140,6 +217,18 @@ public class CheckoutController {
         taxLabel.setText("$0.00");
         totalLabel.setText("$0.00");
         promoCodeField.clear();
+
+        cardNameField.clear();
+        cardNumberField.clear();
+        expirationField.clear();
+        cvvField.clear();
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Empty Cart");
+        alert.setHeaderText(null);
+        alert.setContentText("Your cart is empty.");
+        alert.showAndWait();
+
     }
     
     /**
