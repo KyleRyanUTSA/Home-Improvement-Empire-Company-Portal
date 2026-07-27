@@ -18,6 +18,13 @@ public class SceneManager {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
             Parent root = loader.load();
             primaryStage.getScene().setRoot(root);
+
+            if (fxmlPath.endsWith("MainView.fxml")) {
+                primaryStage.setWidth(1200);
+                primaryStage.setHeight(750);
+                primaryStage.centerOnScreen();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

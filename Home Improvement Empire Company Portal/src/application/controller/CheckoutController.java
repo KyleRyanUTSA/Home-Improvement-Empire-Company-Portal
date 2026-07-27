@@ -53,7 +53,6 @@ public class CheckoutController {
     private ShoppingCart shoppingCart;
 
 
-    
     @FXML
     public void initialize() {
         // Set up table columns
