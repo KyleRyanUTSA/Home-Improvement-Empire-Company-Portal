@@ -52,7 +52,7 @@ public class CredentialLoader {
 			URI credentialsURI = credentialsURL.toURI();
 			Writer credWriter = Files.newBufferedWriter(Paths.get(credentialsURI),StandardOpenOption.CREATE,StandardOpenOption.APPEND);
 			
-				credWriter.write("\n"+cred.getUsername()+"|"+cred.getPassword()+"|"+cred.getAddress()+cred.getPhoneNumber());
+				credWriter.write("\n"+cred.getUsername()+"|"+cred.getPassword()+"|"+cred.getAddress() + "|" +cred.getPhoneNumber());
 			
 			credWriter.close();
 			

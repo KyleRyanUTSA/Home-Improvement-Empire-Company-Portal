@@ -809,21 +809,36 @@ public class MainViewController {
                         "-fx-text-fill: #222222;"
         );
 
+        Label phoneTitle =
+                new Label("Phone Number");
+
+        phoneTitle.setStyle(
+                "-fx-font-weight: bold;" +
+                        "-fx-text-fill: #555555;"
+        );
+
+        String phoneNumber = user.getPhoneNumber();
+
+        if (phoneNumber == null || phoneNumber.isBlank()) {
+            phoneNumber = "Not provided";
+        }
+
+        Label phoneValue =
+                new Label(phoneNumber);
+
+        phoneValue.setStyle(
+                "-fx-font-size: 14px;" +
+                        "-fx-text-fill: #222222;"
+        );
+
         profileGrid.add(usernameTitle, 0, 0);
         profileGrid.add(usernameValue, 1, 0);
 
         profileGrid.add(addressTitle, 0, 1);
         profileGrid.add(addressValue, 1, 1);
 
-        /*
-         * Phone number can be added here later:
-         *
-         * Label phoneTitle = new Label("Phone Number");
-         * Label phoneValue = new Label(user.getPhoneNumber());
-         *
-         * profileGrid.add(phoneTitle, 0, 2);
-         * profileGrid.add(phoneValue, 1, 2);
-         */
+        profileGrid.add(phoneTitle, 0, 2);
+        profileGrid.add(phoneValue, 1, 2);
 
         informationSection.getChildren().addAll(
                 informationTitle,
