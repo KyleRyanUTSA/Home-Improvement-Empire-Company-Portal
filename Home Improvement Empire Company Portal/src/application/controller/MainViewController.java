@@ -6,13 +6,16 @@ import application.model.ProductLoader;
 import application.model.ShoppingCart;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -46,10 +49,6 @@ public class MainViewController {
     private List<Product> shownProducts;
     private ShoppingCart cart;
 
-    // Stores the selected checkout option
-    private String fulfillmentOption = "";
-    private String deliveryAddress = "";
-
     // Runs when the main screen opens
     @FXML
     private void initialize() {
@@ -61,7 +60,10 @@ public class MainViewController {
 
         showCatalogPage();
         updateCartButton();
-        messageLabel.setText("Welcome to Home Improvement Empire!");
+
+        messageLabel.setText(
+                "Welcome to Home Improvement Empire!"
+        );
     }
 
     // Shows the main shopping catalog
@@ -69,7 +71,9 @@ public class MainViewController {
         productTilePane.getChildren().clear();
 
         for (Product product : shownProducts) {
-            productTilePane.getChildren().add(createProductCard(product));
+            productTilePane.getChildren().add(
+                    createProductCard(product)
+            );
         }
 
         mainBorderPane.setCenter(catalogScrollPane);
@@ -99,11 +103,18 @@ public class MainViewController {
                         "-fx-text-fill: #0046be;"
         );
 
-        Label categoryLabel = new Label(product.getCategory());
-        categoryLabel.setStyle("-fx-text-fill: #666666;");
+        Label categoryLabel = new Label(
+                product.getCategory()
+        );
+        categoryLabel.setStyle(
+                "-fx-text-fill: #666666;"
+        );
 
         Label priceLabel = new Label(
-                "$" + String.format("%.2f", product.getPrice())
+                "$" + String.format(
+                        "%.2f",
+                        product.getPrice()
+                )
         );
 
         priceLabel.setStyle(
@@ -147,7 +158,9 @@ public class MainViewController {
         }
 
         // Add item when button is clicked
-        addButton.setOnAction(event -> addProductToCart(product));
+        addButton.setOnAction(
+                event -> addProductToCart(product)
+        );
 
         // Show details when card is clicked
         card.setOnMouseClicked(event -> {
@@ -194,7 +207,7 @@ public class MainViewController {
             );
         }
 
-        // Use the fallback image if the assigned image is missing
+        // Use fallback image if the assigned image is missing
         if (imageUrl == null) {
             imageUrl = getClass().getResource(
                     IMAGE_FOLDER + FALLBACK_IMAGE
@@ -282,7 +295,10 @@ public class MainViewController {
         );
 
         showCatalogPage();
-        messageLabel.setText("Products sorted by price.");
+
+        messageLabel.setText(
+                "Products sorted by price."
+        );
     }
 
     // Sorts current products with available items first
@@ -296,6 +312,7 @@ public class MainViewController {
         );
 
         showCatalogPage();
+
         messageLabel.setText(
                 "In-stock products shown first."
         );
@@ -311,25 +328,39 @@ public class MainViewController {
     private void showCartPage() {
         VBox cartPage = new VBox(15);
         cartPage.setPadding(new Insets(25));
-        cartPage.setStyle("-fx-background-color: white;");
+        cartPage.setStyle(
+                "-fx-background-color: white;"
+        );
 
-        Label titleLabel = new Label("Your Shopping Cart");
+        Label titleLabel = new Label(
+                "Your Shopping Cart"
+        );
+
         titleLabel.setStyle(
                 "-fx-font-size: 26px;" +
                         "-fx-font-weight: bold;"
         );
 
-        ListView<CartItem> cartListView = new ListView<>();
+        ListView<CartItem> cartListView =
+                new ListView<>();
+
         cartListView.setItems(
-                FXCollections.observableArrayList(cart.getItems())
+                FXCollections.observableArrayList(
+                        cart.getItems()
+                )
         );
-        cartListView.setPrefHeight(260);
+
+        cartListView.setPrefHeight(320);
 
         // Right click removes one quantity
         cartListView.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.SECONDARY) {
+            if (event.getButton()
+                    == MouseButton.SECONDARY) {
+
                 CartItem selectedItem =
-                        cartListView.getSelectionModel().getSelectedItem();
+                        cartListView
+                                .getSelectionModel()
+                                .getSelectedItem();
 
                 if (selectedItem != null) {
                     cart.removeOneProduct(selectedItem);
@@ -349,7 +380,9 @@ public class MainViewController {
 
         removeButton.setOnAction(event -> {
             CartItem selectedItem =
-                    cartListView.getSelectionModel().getSelectedItem();
+                    cartListView
+                            .getSelectionModel()
+                            .getSelectedItem();
 
             if (selectedItem == null) {
                 messageLabel.setText(
@@ -367,259 +400,109 @@ public class MainViewController {
             );
         });
 
-        TextField discountField = new TextField();
-        discountField.setPromptText("Enter discount code");
-        discountField.setPrefWidth(180);
-
-        Button applyDiscountButton = new Button("Apply Code");
-
-        applyDiscountButton.setOnAction(event -> {
-            boolean valid =
-                    cart.applyDiscountCode(discountField.getText());
-
-            showCartPage();
-
-            if (valid) {
-                int percent =
-                        (int) (cart.getDiscountRate() * 100);
-
-                messageLabel.setText(
-                        percent + "% discount applied."
-                );
-            } else {
-                messageLabel.setText(
-                        "Invalid discount code."
-                );
-            }
-        });
-
-        HBox discountBox = new HBox(
-                10,
-                discountField,
-                applyDiscountButton
-        );
-
-        // Delivery or pickup section
-        Label fulfillmentLabel = new Label(
-                "Choose delivery or store pickup:"
-        );
-        fulfillmentLabel.setStyle("-fx-font-weight: bold;");
-
-        RadioButton deliveryButton = new RadioButton("Delivery");
-        RadioButton pickupButton = new RadioButton("Store Pickup");
-
-        ToggleGroup fulfillmentGroup = new ToggleGroup();
-        deliveryButton.setToggleGroup(fulfillmentGroup);
-        pickupButton.setToggleGroup(fulfillmentGroup);
-
-        // Restore the selected option when the cart refreshes
-        if (fulfillmentOption.equals("Delivery")) {
-            deliveryButton.setSelected(true);
-        } else if (fulfillmentOption.equals("Pickup")) {
-            pickupButton.setSelected(true);
-        }
-
-        HBox fulfillmentBox = new HBox(
-                20,
-                deliveryButton,
-                pickupButton
-        );
-
-        // Delivery address fields
-        TextField streetField = new TextField();
-        streetField.setPromptText("Street address");
-
-        TextField cityField = new TextField();
-        cityField.setPromptText("City");
-
-        TextField stateField = new TextField();
-        stateField.setPromptText("State");
-        stateField.setPrefWidth(90);
-
-        TextField zipField = new TextField();
-        zipField.setPromptText("ZIP code");
-        zipField.setPrefWidth(110);
-
-        HBox cityStateZipBox = new HBox(
-                10,
-                cityField,
-                stateField,
-                zipField
-        );
-
-        VBox addressBox = new VBox(
-                8,
-                streetField,
-                cityStateZipBox
-        );
-
-        // Only show address fields when delivery is selected
-        addressBox.setVisible(deliveryButton.isSelected());
-        addressBox.setManaged(deliveryButton.isSelected());
-
-        deliveryButton.setOnAction(event -> {
-            fulfillmentOption = "Delivery";
-
-            addressBox.setVisible(true);
-            addressBox.setManaged(true);
-
-            messageLabel.setText("Delivery selected.");
-        });
-
-        pickupButton.setOnAction(event -> {
-            fulfillmentOption = "Pickup";
-            deliveryAddress = "";
-
-            addressBox.setVisible(false);
-            addressBox.setManaged(false);
-
-            messageLabel.setText("Store pickup selected.");
-        });
-
+        // Cart only shows subtotal before checkout
         Label subtotalLabel = new Label(
-                "Subtotal: $" +
-                        String.format(
-                                "%.2f",
-                                cart.getSubtotal()
-                        )
+                "Cart Subtotal: $"
+                        + String.format(
+                        "%.2f",
+                        cart.getSubtotal()
+                )
         );
 
-        Label discountLabel = new Label(
-                "Discount: -$" +
-                        String.format(
-                                "%.2f",
-                                cart.getDiscountAmount()
-                        )
-        );
-
-        Label taxLabel = new Label(
-                "Tax: $" +
-                        String.format(
-                                "%.2f",
-                                cart.getTax()
-                        )
-        );
-
-        Label totalLabel = new Label(
-                "Total: $" +
-                        String.format(
-                                "%.2f",
-                                cart.getTotal()
-                        )
-        );
-
-        totalLabel.setStyle(
+        subtotalLabel.setStyle(
                 "-fx-font-size: 18px;" +
                         "-fx-font-weight: bold;"
         );
 
-        Button checkoutButton = new Button("Checkout");
+        Button checkoutButton =
+                new Button("Checkout");
+
         checkoutButton.setStyle(
-                "-fx-background-color: #f5f5f5;" +
+                "-fx-background-color: #1F4D2B;" +
+                        "-fx-text-fill: white;" +
                         "-fx-font-weight: bold;"
         );
 
         checkoutButton.setPrefWidth(180);
 
+        // Opens the separate checkout screen
         checkoutButton.setOnAction(event -> {
-            if (deliveryButton.isSelected()) {
-                String street = streetField.getText().trim();
-                String city = cityField.getText().trim();
-                String state = stateField.getText().trim();
-                String zip = zipField.getText().trim();
-
-                if (street.isEmpty()
-                        || city.isEmpty()
-                        || state.isEmpty()
-                        || zip.isEmpty()) {
-
-                    messageLabel.setText(
-                            "Please complete the delivery address."
-                    );
-                    return;
-                }
-
-                fulfillmentOption = "Delivery";
-
-                deliveryAddress =
-                        street + ", "
-                                + city + ", "
-                                + state + " "
-                                + zip;
-            } else if (pickupButton.isSelected()) {
-                fulfillmentOption = "Pickup";
-                deliveryAddress = "";
+            if (cart.getItems().isEmpty()) {
+                messageLabel.setText(
+                        "Cart is empty."
+                );
+                return;
             }
 
-            handleCheckout();
+            openCheckoutPage();
         });
 
-        Button backButton = new Button("Back to Shopping");
+        Button backButton =
+                new Button("Back to Shopping");
 
         backButton.setOnAction(event -> {
             showCatalogPage();
-            messageLabel.setText("Back to shopping.");
+
+            messageLabel.setText(
+                    "Back to shopping."
+            );
         });
 
         cartPage.getChildren().addAll(
                 titleLabel,
                 cartListView,
                 removeButton,
-                discountBox,
-                fulfillmentLabel,
-                fulfillmentBox,
-                addressBox,
                 subtotalLabel,
-                discountLabel,
-                taxLabel,
-                totalLabel,
                 checkoutButton,
                 backButton
         );
 
-        // Allows the cart page to scroll when address fields are shown
-        ScrollPane cartScrollPane = new ScrollPane(cartPage);
-        cartScrollPane.setFitToWidth(true);
-
-        mainBorderPane.setCenter(cartScrollPane);
+        mainBorderPane.setCenter(cartPage);
         messageLabel.setText("Cart opened.");
     }
 
-    // Completes the checkout
-    @FXML
-    private void handleCheckout() {
-        if (cart.getItems().isEmpty()) {
-            messageLabel.setText("Cart is empty.");
-            return;
-        }
-
-        if (fulfillmentOption.isEmpty()) {
-            messageLabel.setText(
-                    "Please choose delivery or store pickup."
+    // Opens Checkout.fxml and passes the existing cart
+    private void openCheckoutPage() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource(
+                            "/Data/views/Checkout.fxml"
+                    )
             );
-            return;
+
+            Parent checkoutPage = loader.load();
+
+            CheckoutController checkoutController =
+                    loader.getController();
+
+            // Pass the real shopping cart to checkout
+            checkoutController.setCart(cart);
+
+            // Allows checkout to return to the cart page
+            checkoutController.setReturnToShoppingAction(
+                    () -> {
+                        showCartPage();
+                        updateCartButton();
+
+                        messageLabel.setText(
+                                "Returned to cart."
+                        );
+                    }
+            );
+
+            mainBorderPane.setCenter(checkoutPage);
+
+            messageLabel.setText(
+                    "Checkout opened."
+            );
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            messageLabel.setText(
+                    "The checkout page could not be opened."
+            );
         }
-
-        String confirmationMessage;
-
-        if (fulfillmentOption.equals("Delivery")) {
-            confirmationMessage =
-                    "Order placed for delivery to "
-                            + deliveryAddress
-                            + "!";
-        } else {
-            confirmationMessage =
-                    "Order placed for store pickup!";
-        }
-
-        cart.clearCart();
-        fulfillmentOption = "";
-        deliveryAddress = "";
-
-        updateCartButton();
-        showCatalogPage();
-
-        messageLabel.setText(confirmationMessage);
     }
 
     // Updates cart button count

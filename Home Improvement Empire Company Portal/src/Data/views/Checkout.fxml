@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="application.controller.CheckoutController"
+      spacing="12"
+      prefWidth="900"
+      prefHeight="650"
+      style="-fx-background-color: white;">
+
+    <padding>
+        <Insets top="20"
+                right="25"
+                bottom="20"
+                left="25"/>
+    </padding>
+
+    <Label text="Checkout"
+           style="-fx-font-size: 26px; -fx-font-weight: bold;"/>
+
+    <Label text="Review the items in your cart:"
+           style="-fx-text-fill: #555555;"/>
+
+    <TableView fx:id="cartTable"
+               prefHeight="420"
+               VBox.vgrow="ALWAYS">
+
+        <columns>
+            <TableColumn fx:id="itemNameColumn"
+                         text="Product"
+                         prefWidth="350"/>
+
+            <TableColumn fx:id="quantityColumn"
+                         text="Quantity"
+                         prefWidth="110"/>
+
+            <TableColumn fx:id="priceColumn"
+                         text="Price"
+                         prefWidth="140"/>
+
+            <TableColumn fx:id="totalColumn"
+                         text="Item Total"
+                         prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="8"
+          alignment="CENTER_LEFT">
+
+        <TextField fx:id="promoCodeField"
+                   promptText="Promo code"
+                   prefWidth="170"/>
+
+        <Button fx:id="applyPromoButton"
+                text="Apply"
+                onAction="#handleApplyPromo"/>
+    </HBox>
+
+    <HBox spacing="20"
+          alignment="CENTER_LEFT">
+
+        <Label text="Subtotal:"/>
+        <Label fx:id="subtotalLabel"
+               text="\$0.00"/>
+
+        <Label text="Tax:"/>
+        <Label fx:id="taxLabel"
+               text="\$0.00"/>
+
+        <Label text="Total:"
+               style="-fx-font-weight: bold;"/>
+
+        <Label fx:id="totalLabel"
+               text="\$0.00"
+               style="-fx-font-weight: bold;"/>
+    </HBox>
+
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <HBox spacing="10"
+          alignment="CENTER_RIGHT">
+
+        <Button fx:id="continueShoppingButton"
+                text="Return to Cart"
+                onAction="#handleContinueShopping"/>
+
+        <Button fx:id="cancelButton"
+                text="Cancel"
+                onAction="#handleCancel"/>
+
+        <Button fx:id="completeCheckoutButton"
+                text="Complete Checkout"
+                onAction="#handleCompleteCheckout"
+                style="-fx-background-color: #1F4D2B;
+                       -fx-text-fill: white;
+                       -fx-font-weight: bold;"/>
+    </HBox>
+
+</VBox>

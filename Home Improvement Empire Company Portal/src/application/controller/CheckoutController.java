@@ -10,6 +10,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import application.SceneManager;
+import application.model.CartItem;
+// Stores the same shopping cart used by the main shopping page
+import application.model.ShoppingCart;
 
 public class CheckoutController {
     
@@ -23,14 +26,15 @@ public class CheckoutController {
     private TableColumn<CheckoutItem, Double> priceColumn;
     @FXML
     private TableColumn<CheckoutItem, Double> totalColumn;
-    
+
     @FXML
     private Label subtotalLabel;
     @FXML
     private Label taxLabel;
     @FXML
     private Label totalLabel;
-    
+    // Allows the checkout screen to return to the existing cart page
+    private Runnable returnToShoppingAction;
     @FXML
     private TextField promoCodeField;
     @FXML
@@ -45,7 +49,10 @@ public class CheckoutController {
     
     private ObservableList<CheckoutItem> cartItems;
     private double subtotal = 0.0;
-    private double taxRate = 0.08; // 8% tax rate
+    private double taxRate = 0.0825; // 8% tax rate
+    private ShoppingCart shoppingCart;
+
+
     
     @FXML
     public void initialize() {
@@ -60,19 +67,42 @@ public class CheckoutController {
         cartTable.setItems(cartItems);
         
         // Add sample items (replace with actual cart data)
-        addSampleItems();
+
+        updateTotals();
+    }
+
+    // Receives the current cart when the checkout screen is opened
+    public void setCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
+
+        // Clear old table data before loading the current cart items
+        cartItems.clear();
+
+        for (CartItem item : shoppingCart.getItems()) {
+            cartItems.add(
+                    new CheckoutItem(
+                            item.getProduct().getName(),
+                            item.getQuantity(),
+                            item.getProduct().getPrice()
+                    )
+            );
+        }
+
         updateTotals();
     }
     
     /**
      * Add sample items to the cart for testing
      */
-    private void addSampleItems() {
+  /*  private void addSampleItems() {
         cartItems.add(new CheckoutItem("Paint (Gallon)", 1, 45.99));
         cartItems.add(new CheckoutItem("Wood Flooring (per sq ft)", 150, 3.50));
         cartItems.add(new CheckoutItem("Light Fixtures", 2, 89.99));
     }
-    
+
+
+  */
+
     /**
      * Update subtotal, tax, and total
      */
@@ -132,9 +162,12 @@ public class CheckoutController {
         System.out.println("Subtotal: $" + String.format("%.2f", subtotal));
         System.out.println("Total Items: " + cartItems.size());
         
-        // TODO: Implement actual checkout logic (payment processing, order creation, etc.)
+        // TODO: add delivery, pickup,address validation, and order confirmation here
         
         // Clear cart and show confirmation
+        if (shoppingCart != null) {
+            shoppingCart.clearCart();
+        }
         cartItems.clear();
         subtotalLabel.setText("$0.00");
         taxLabel.setText("$0.00");
@@ -147,7 +180,11 @@ public class CheckoutController {
      */
     @FXML
     private void handleContinueShopping() {
-        SceneManager.switchTo("/Data/views/HIELS.fxml"); // Adjust path as needed
+        SceneManager.switchTo("/Data/views/HIELS.fxml");
+
+        if (returnToShoppingAction != null) {
+            returnToShoppingAction.run();
+        }
     }
     
     /**
@@ -156,6 +193,10 @@ public class CheckoutController {
     @FXML
     private void handleCancel() {
         SceneManager.switchTo("/Data/views/HIELS.fxml"); // Adjust path as needed
+
+        if (returnToShoppingAction != null) {
+            returnToShoppingAction.run();
+        }
     }
     
     /**
@@ -204,4 +245,12 @@ public class CheckoutController {
         
         public double getTotal() { return quantity * price; }
     }
+
+    // Saves the action used to return from checkout to the cart page
+    public void setReturnToShoppingAction(Runnable returnToShoppingAction) {
+        this.returnToShoppingAction = returnToShoppingAction;
+    }
+
+
+
 }
