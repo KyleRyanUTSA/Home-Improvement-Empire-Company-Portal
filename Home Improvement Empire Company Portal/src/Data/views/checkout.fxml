@@ -1,0 +1,27 @@
+<VBox spacing="10">
+
+    <Label text="Payment Information"
+           style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+
+
+    <Label text="Cardholder Name"/>
+    <TextField fx:id="cardNameField"
+               promptText="John Smith"/>
+
+
+    <Label text="Card Number"/>
+    <TextField fx:id="cardNumberField"
+               promptText="16 digit card number"/>
+
+
+    <Label text="Expiration Date"/>
+    <TextField fx:id="expirationField"
+               promptText="MM/YY"/>
+
+
+    <Label text="CVV"/>
+    <PasswordField fx:id="cvvField"
+                   promptText="123"/>
+
+
+</VBox>
