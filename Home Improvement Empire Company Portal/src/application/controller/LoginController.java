@@ -28,7 +28,7 @@ public class LoginController {
 	private void initialize() {
         testingLabel.setText("");
 
-        Image image = new Image(getClass().getResourceAsStream("/Data/images/.jpg"));
+        Image image = new Image(getClass().getResourceAsStream("/Data/images/home-improvement-logo-design-for-business-bulding-interior-and-exterior-vector.jpg"));
         logoImage.setImage(image);
     }
 
