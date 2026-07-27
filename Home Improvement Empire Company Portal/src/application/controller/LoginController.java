@@ -20,16 +20,22 @@ public class LoginController {
 	private PasswordField passwordField;
 	@FXML
 	private ImageView logoImage;
-	@FXML 
-	private void initialize() {
-		testingLabel.setText("");
-	}
+
 	@FXML
-	private void initialize() {
+    private void initialize() {
         testingLabel.setText("");
 
-        Image image = new Image(getClass().getResourceAsStream("/Data/images/home-improvement-logo-design-for-business-bulding-interior-and-exterior-vector.jpg"));
-        logoImage.setImage(image);
+        var imageUrl = getClass().getResource(
+                "/Data/images/home-improvement-logo-design-for-business-bulding-interior-and-exterior-vector.jpg"
+        );
+
+        if (imageUrl == null) {
+            testingLabel.setText("Logo image could not be found.");
+            System.err.println("Could not find login logo image.");
+            return;
+        }
+
+        logoImage.setImage(new Image(imageUrl.toExternalForm()));
     }
 
 	@FXML
