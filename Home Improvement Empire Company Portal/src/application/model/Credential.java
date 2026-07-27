@@ -5,11 +5,19 @@ public class Credential {
 	private String username;
 	private String password;
 	private String address;
+	private String phoneNumber;
 	
 	public Credential(String username, String password,String address) {
 		this.setUsername(username);	
 		this.setPassword(password);
 		this.setAddress(address);
+		this.phoneNumber = "0000000000";
+	}
+	public Credential(String username, String password,String address,String phoneNumber) {
+		this.setUsername(username);	
+		this.setPassword(password);
+		this.setAddress(address);
+		this.setPhoneNumber(phoneNumber);
 	}
 
 	public String getUsername() {
@@ -34,5 +42,11 @@ public class Credential {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 }

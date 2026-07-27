@@ -34,7 +34,12 @@ public class CredentialLoader {
             while ((line = reader.readLine()) != null) {
                 //System.out.println(line);
             	 String linesplit[] = line.split("\\|");
-            	 toReturn.add(new Credential(linesplit[0],linesplit[1],linesplit[2]));
+            	 if(linesplit.length == 4) {
+            		 toReturn.add(new Credential(linesplit[0],linesplit[1],linesplit[2],linesplit[3]));
+            	 }
+            	 else {
+            		 toReturn.add(new Credential(linesplit[0],linesplit[1],linesplit[2]));
+            	 }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,7 +51,8 @@ public class CredentialLoader {
 		try {
 			URI credentialsURI = credentialsURL.toURI();
 			Writer credWriter = Files.newBufferedWriter(Paths.get(credentialsURI),StandardOpenOption.CREATE,StandardOpenOption.APPEND);
-			credWriter.write("\n"+cred.getUsername()+"|"+cred.getPassword()+"|"+cred.getAddress());
+			
+				credWriter.write("\n"+cred.getUsername()+"|"+cred.getPassword()+"|"+cred.getAddress()+cred.getPhoneNumber());
 			
 			credWriter.close();
 			

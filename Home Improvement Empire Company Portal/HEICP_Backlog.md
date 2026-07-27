@@ -12,3 +12,4 @@
 | 8 | Technical Improvement | Shopping system improvements | Moderate | 13 | Complete | Zane | Add separate checkout screen with optional promo codes at checkout |
 | 9 | Account management | Sign up improvements | High | 5 | Complete | Kyle | Prevent users from creating duplicate accounts with the same username on registration |
 | 10 | Account management | Sign up improvements | High | 5 | Complete | Kyle | Prevent users from creating accounts without a password by leaving the password field empty |
+| 11 | Account management | Sign up improvements | low | 1 | Complete | Kyle | Add optional Phone number field |

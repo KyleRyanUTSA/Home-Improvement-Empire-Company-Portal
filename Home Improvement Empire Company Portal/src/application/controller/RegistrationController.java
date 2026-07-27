@@ -25,6 +25,8 @@ public class RegistrationController {
 	private PasswordField confirmPasswordField;
 	@FXML 
 	private TextField addressField;
+	@FXML
+	private TextField phoneField;
 	
 	@FXML
     private void initialize() {
@@ -46,9 +48,19 @@ public class RegistrationController {
 			confirmPasswordField.setText("");
 		}else if(CredentialVerifier.userExists(usernameField.getText())) {
 			errorLabel.setText("User Already Exists");
-		}else {
+		}else if((phoneField.getText().length() != 10 || !phoneField.getText().matches("\\d+")) && !phoneField.getText().equals("")) {
+			errorLabel.setText("Invalid Phone number");
 			
-			CredentialLoader.saveCredentials(new Credential(usernameField.getText(),passwordField.getText(),addressField.getText()));
+		}
+		
+			else {
+			if(phoneField.getText().equals("")) {
+				CredentialLoader.saveCredentials(new Credential(usernameField.getText(),passwordField.getText(),addressField.getText()));
+			}else {
+				CredentialLoader.saveCredentials(new Credential(usernameField.getText(),passwordField.getText(),addressField.getText(),phoneField.getText()));
+			}
+			
+			
 			SceneManager.switchTo("/Data/views/HIELS.fxml");
 		}
 		
