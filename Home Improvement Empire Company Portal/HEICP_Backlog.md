@@ -13,3 +13,9 @@
 | 9 | Account management | Sign up improvements | High | 5 | Complete | Kyle | Prevent users from creating duplicate accounts with the same username on registration |
 | 10 | Account management | Sign up improvements | High | 5 | Complete | Kyle | Prevent users from creating accounts without a password by leaving the password field empty |
 | 11 | Account management | Sign up improvements | low | 1 | Complete | Kyle | Add optional Phone number field |
+| 12 | Technical Improvement | Add product loading from a CSV file | High | 8 | Complete | Zane | Products are loaded from products.csv and displayed automatically on the main shopping page. |
+| 13 | Shopping System Improvement | Add products to the shopping cart from the main product catalog | High | 8 | Complete | Zane | Users can add available products to the cart by pressing the Add to Cart button. |
+| 14 | Cart Purchase System Improvement | Allow users to remove products and update cart quantities | High | 8 | Complete | Zane | Users can remove selected products from the cart, and repeated products are tracked using item quantities. |
+| 15 | Technical Improvement | Connect the shopping cart to the checkout controller | High | 13 | Complete | Zane | The active shopping cart is passed to the checkout screen so the correct items, quantities, and subtotal are displayed. |
+| 16 | Quality of Life Improvement | Display the current cart item count on the main shopping page | Moderate | 3 | Complete | Zane | The Cart button updates automatically to show the total number of items currently in the cart. |
+
