@@ -4,15 +4,17 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.LoginController">
    <children>
-      <TextField fx:id="usernameField" layoutX="226.0" layoutY="125.0" promptText="Username:" />
-      <PasswordField fx:id="passwordField" layoutX="226.0" layoutY="196.0" promptText="Password:" />
-      <Button layoutX="200.0" layoutY="271.0" mnemonicParsing="false" onAction="#handleSignInAction" text="Sign In" />
-      <Label layoutX="259.0" layoutY="22.0" text="Account Sign in" />
-      <Label id="testingLabel" fx:id="testingLabel" layoutX="234.0" layoutY="338.0" text="You have been signed in!" />
-      <Button layoutX="349.0" layoutY="271.0" mnemonicParsing="false" onAction="#handleSignUpAction" text="Sign Up" />
+      <TextField fx:id="usernameField" layoutX="229.0" layoutY="222.0" promptText="Username:" />
+      <PasswordField fx:id="passwordField" layoutX="228.0" layoutY="272.0" promptText="Password:" />
+      <Button layoutX="193.0" layoutY="328.0" mnemonicParsing="false" onAction="#handleSignInAction" text="Sign In" />
+      <Label layoutX="209.0" layoutY="20.0" text="Home Improvement Empire Portal" />
+      <Label id="testingLabel" fx:id="testingLabel" layoutX="225.0" layoutY="370.0" text="You have been signed in!" />
+      <Button layoutX="342.0" layoutY="328.0" mnemonicParsing="false" onAction="#handleSignUpAction" text="Register" />
+      <ImageView id="logoImage" fx:id="logoImage" fitHeight="150.0" fitWidth="200.0" layoutX="228.0" layoutY="48.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

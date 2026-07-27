@@ -3,6 +3,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+
+import java.net.URL;
+
 import application.SceneManager;
 import application.model.Credential;
 import application.model.CredentialLoader;
@@ -24,10 +27,11 @@ public class LoginController {
 	@FXML
     private void initialize() {
         testingLabel.setText("");
+        testingLabel.setLayoutX(175);
+		testingLabel.setLayoutY(370);
 
-        var imageUrl = getClass().getResource(
-                "/Data/images/home-improvement-logo-design-for-business-bulding-interior-and-exterior-vector.jpg"
-        );
+        URL imageUrl = getClass().getResource("/image/logo.jpg");
+        System.out.println(imageUrl);
 
         if (imageUrl == null) {
             testingLabel.setText("Logo image could not be found.");
@@ -40,22 +44,18 @@ public class LoginController {
 
 	@FXML
 	private void handleSignInAction(ActionEvent event) {
-		if(CredentialVerifier.verifyCredential(new Credential(usernameField.getText(),passwordField.getText()))) {
+		Credential cred = CredentialVerifier.verifyCredential(usernameField.getText(),passwordField.getText());
+		if(cred != null) {
 			SceneManager.switchTo("/Data/views/MainView.fxml");
 		}
 		else {
 			testingLabel.setText("Invalid Credentials, please try again");
+			testingLabel.setLayoutX(200);
 		}
 		
 	}
 	@FXML
 	private void handleSignUpAction(ActionEvent event) {
-		if(!(CredentialVerifier.verifyCredential(new Credential(usernameField.getText(),passwordField.getText())))) {
-			CredentialLoader.saveCredentials(usernameField.getText(),passwordField.getText());
-			testingLabel.setText("Sign Up successful");
-		}
-		else {
-			testingLabel.setText("Sign Up failed, account already exists");
-		}
+		SceneManager.switchTo("/Data/views/Registration.fxml");
 	}
 }

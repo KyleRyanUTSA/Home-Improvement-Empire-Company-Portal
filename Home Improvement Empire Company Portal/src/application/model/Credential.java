@@ -4,10 +4,12 @@ public class Credential {
 	
 	private String username;
 	private String password;
+	private String address;
 	
-	public Credential(String username, String password) {
+	public Credential(String username, String password,String address) {
 		this.setUsername(username);	
 		this.setPassword(password);
+		this.setAddress(address);
 	}
 
 	public String getUsername() {
@@ -24,5 +26,13 @@ public class Credential {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 }

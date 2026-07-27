@@ -34,19 +34,19 @@ public class CredentialLoader {
             while ((line = reader.readLine()) != null) {
                 //System.out.println(line);
             	 String linesplit[] = line.split("\\|");
-            	 toReturn.add(new Credential(linesplit[0],linesplit[1]));
+            	 toReturn.add(new Credential(linesplit[0],linesplit[1],linesplit[2]));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 		return toReturn;
     }
-	public static void saveCredentials(String userName, String password) {
+	public static void saveCredentials(Credential cred) {
 		URL credentialsURL  = CredentialLoader.class.getResource("/Data/Credentials/Credentials");
 		try {
 			URI credentialsURI = credentialsURL.toURI();
 			Writer credWriter = Files.newBufferedWriter(Paths.get(credentialsURI),StandardOpenOption.CREATE,StandardOpenOption.APPEND);
-			credWriter.write("\n"+userName+"|"+password);
+			credWriter.write("\n"+cred.getUsername()+"|"+cred.getPassword()+"|"+cred.getAddress());
 			
 			credWriter.close();
 			
