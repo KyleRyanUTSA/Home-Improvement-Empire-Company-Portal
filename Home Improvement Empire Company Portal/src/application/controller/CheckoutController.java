@@ -15,7 +15,7 @@ import javafx.event.ActionEvent;
 
 import application.SceneManager;
 import application.model.CartItem;
-imprt application.model.ShoppingCart;
+import application.model.ShoppingCart;
 
 public class CheckoutController {
     
