@@ -83,12 +83,12 @@ public class ShoppingCart {
 
         String cleanedCode = code.trim().toUpperCase();
 
-        if (cleanedCode.equals("SAVE10")) {
+        if (cleanedCode.equals("HOME10")) {
             discountRate = 0.10;
             return true;
         }
 
-        if (cleanedCode.equals("SAVE20")) {
+        if (cleanedCode.equals("HOME20")) {
             discountRate = 0.20;
             return true;
         }
