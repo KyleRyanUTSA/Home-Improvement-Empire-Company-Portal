@@ -6,6 +6,8 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
@@ -66,24 +68,50 @@
                 onAction="#handleApplyPromo"/>
     </HBox>
 
-    <HBox spacing="20"
-          alignment="CENTER_LEFT">
+    <VBox spacing="8" style="-fx-padding: 10; -fx-background-color: #F5F7F5; -fx-background-radius: 6;">
+        <Label text="Delivery Option" style="-fx-font-weight: bold;"/>
+        <HBox spacing="18" alignment="CENTER_LEFT">
+            <RadioButton fx:id="pickupRadioButton"
+                         text="Store Pickup (Free)"
+                         selected="true"
+                         onAction="#handleDeliveryOptionChanged">
+                <toggleGroup>
+                    <ToggleGroup fx:id="deliveryToggleGroup"/>
+                </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="standardDeliveryRadioButton"
+                         text="Standard Delivery (\$9.99)"
+                         toggleGroup="$deliveryToggleGroup"
+                         onAction="#handleDeliveryOptionChanged"/>
+            <RadioButton fx:id="expressDeliveryRadioButton"
+                         text="Express Delivery (\$24.99)"
+                         toggleGroup="$deliveryToggleGroup"
+                         onAction="#handleDeliveryOptionChanged"/>
+        </HBox>
+    </VBox>
 
-        <Label text="Subtotal:"/>
-        <Label fx:id="subtotalLabel"
-               text="\$0.00"/>
-
-        <Label text="Tax:"/>
-        <Label fx:id="taxLabel"
-               text="\$0.00"/>
-
-        <Label text="Total:"
-               style="-fx-font-weight: bold;"/>
-
-        <Label fx:id="totalLabel"
-               text="\$0.00"
-               style="-fx-font-weight: bold;"/>
-    </HBox>
+    <VBox spacing="6" alignment="CENTER_RIGHT">
+        <HBox spacing="20" alignment="CENTER_RIGHT">
+            <Label text="Subtotal:" prefWidth="110"/>
+            <Label fx:id="subtotalLabel" text="\$0.00" prefWidth="90"/>
+        </HBox>
+        <HBox spacing="20" alignment="CENTER_RIGHT">
+            <Label text="Discount:" prefWidth="110"/>
+            <Label fx:id="discountLabel" text="-\$0.00" prefWidth="90" style="-fx-text-fill: #1F7A3F;"/>
+        </HBox>
+        <HBox spacing="20" alignment="CENTER_RIGHT">
+            <Label text="Delivery:" prefWidth="110"/>
+            <Label fx:id="deliveryFeeLabel" text="\$0.00" prefWidth="90"/>
+        </HBox>
+        <HBox spacing="20" alignment="CENTER_RIGHT">
+            <Label text="Tax:" prefWidth="110"/>
+            <Label fx:id="taxLabel" text="\$0.00" prefWidth="90"/>
+        </HBox>
+        <HBox spacing="20" alignment="CENTER_RIGHT">
+            <Label text="Total:" prefWidth="110" style="-fx-font-weight: bold;"/>
+            <Label fx:id="totalLabel" text="\$0.00" prefWidth="90" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+        </HBox>
+    </VBox>
 
     <Region VBox.vgrow="ALWAYS"/>
 
