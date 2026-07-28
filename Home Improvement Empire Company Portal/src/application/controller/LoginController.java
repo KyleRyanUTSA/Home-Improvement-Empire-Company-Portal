@@ -35,7 +35,7 @@ public class LoginController {
         testingLabel.setLayoutY(370);
 
         URL imageUrl = getClass().getResource(
-                "/image/logo.jpg"
+                "/image/logo.png"
         );
 
         System.out.println(imageUrl);
@@ -55,6 +55,7 @@ public class LoginController {
         logoImage.setImage(
                 new Image(imageUrl.toExternalForm())
         );
+        logoImage.setLayoutX(250);
     }
 
     @FXML
