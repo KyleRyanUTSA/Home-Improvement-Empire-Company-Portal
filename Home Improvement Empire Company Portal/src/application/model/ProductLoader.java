@@ -6,62 +6,101 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-// Loads product data from a CSV file
+// Loads the original product seed data from products.csv
 public class ProductLoader {
 
-    public static List<Product> loadProducts() {
+    private ProductLoader() {
+        // Prevent ProductLoader objects
+    }
+
+    public static List<Product> loadProductsFromCsv() {
         List<Product> products = new ArrayList<>();
 
-        // Finds the products.csv file inside the Data folder
-        InputStream is = ProductLoader.class.getResourceAsStream("/Data/products.csv");
+        InputStream inputStream =
+                ProductLoader.class.getResourceAsStream(
+                        "/Data/products.csv"
+                );
 
-        if (is == null) {
-            System.out.println("products.csv was not found.");
-            return products;
+        if (inputStream == null) {
+            throw new IllegalStateException(
+                    "products.csv was not found at /Data/products.csv."
+            );
         }
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-            String line;
-
-            // Skip the first row because it is the header
+        try (
+                BufferedReader reader =
+                        new BufferedReader(
+                                new InputStreamReader(inputStream)
+                        )
+        ) {
+            // Skip the CSV header
             reader.readLine();
 
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
+            String line;
 
-                // Makes sure the row has all needed values
-                if (parts.length < 6) {
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) {
                     continue;
                 }
 
-                String productId = parts[0].trim();
-                String name = parts[1].trim();
-                String description = parts[2].trim();
-                double price = Double.parseDouble(parts[3].trim());
-                String category = parts[4].trim();
-                boolean available = Boolean.parseBoolean(parts[5].trim());
+                String[] parts =
+                        line.split(",", -1);
 
-                // Uses the image filename from the CSV
-                // Uses the fallback image if the filename is missing
-                String imageName = parts.length > 6
-                        ? parts[6].trim()
-                        : "default-product.jpg";
+                if (parts.length < 6) {
+                    System.out.println(
+                            "Skipping invalid product row: "
+                                    + line
+                    );
 
-                Product product = new Product(
-                        productId,
-                        name,
-                        description,
-                        price,
-                        category,
-                        available,
-                        imageName
+                    continue;
+                }
+
+                String productId =
+                        parts[0].trim();
+
+                String name =
+                        parts[1].trim();
+
+                String description =
+                        parts[2].trim();
+
+                double price =
+                        Double.parseDouble(
+                                parts[3].trim()
+                        );
+
+                String category =
+                        parts[4].trim();
+
+                boolean available =
+                        Boolean.parseBoolean(
+                                parts[5].trim()
+                        );
+
+                String imageName =
+                        parts.length > 6
+                                && !parts[6].trim().isBlank()
+                                ? parts[6].trim()
+                                : "default-product.jpg";
+
+                products.add(
+                        new Product(
+                                productId,
+                                name,
+                                description,
+                                price,
+                                category,
+                                available,
+                                imageName
+                        )
                 );
-
-                products.add(product);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            throw new IllegalStateException(
+                    "Products could not be loaded from CSV.",
+                    exception
+            );
         }
 
         return products;

@@ -6,22 +6,35 @@ import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import application.model.ProductDatabaseInitializer;
 
 
 public class Main extends Application {
-	@Override
-	public void start(Stage primaryStage) {
-		try {
-			SceneManager.setPrimaryStage(primaryStage);
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/Data/views/HIELS.fxml"));
-			Parent root = loader.load();
-			primaryStage.setScene(new Scene(root));
-			primaryStage.show();
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            ProductDatabaseInitializer.initializeProducts();
+
+            SceneManager.setPrimaryStage(primaryStage);
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource(
+                            "/Data/views/HIELS.fxml"
+                    )
+            );
+
+            Parent root = loader.load();
+
+            primaryStage.setScene(
+                    new Scene(root)
+            );
+
+            primaryStage.show();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
 	
 	public static void main(String[] args) {
 		launch(args);

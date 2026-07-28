@@ -5,6 +5,7 @@ import application.model.CartItem;
 import application.model.Credential;
 import application.model.Product;
 import application.model.ProductLoader;
+import application.model.ProductDatabase;
 import application.model.ShoppingCart;
 import application.model.UserSession;
 import javafx.collections.FXCollections;
@@ -69,8 +70,7 @@ public class MainViewController {
     private void initialize() {
         cart = new ShoppingCart();
 
-        // Load products from CSV
-        allProducts = ProductLoader.loadProducts();
+        allProducts = ProductDatabase.loadProducts();
         shownProducts = new ArrayList<>(allProducts);
 
         initializeCategoryOptions();
