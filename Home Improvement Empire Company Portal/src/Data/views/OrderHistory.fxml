@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="application.controller.OrderHistoryController"
+      spacing="14"
+      prefWidth="1000"
+      prefHeight="620"
+      style="-fx-background-color: white;">
+
+    <padding>
+        <Insets top="24" right="30" bottom="24" left="30"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Order History"
+                   style="-fx-font-size: 27px; -fx-font-weight: bold; -fx-text-fill: #1F4D2B;"/>
+            <Label fx:id="statusLabel"
+                   text="Loading completed orders..."
+                   style="-fx-text-fill: #666666;"/>
+        </VBox>
+
+        <Button text="Back to Shopping"
+                onAction="#handleBackToShopping"
+                style="-fx-background-color: #1F4D2B; -fx-text-fill: white; -fx-font-weight: bold;"/>
+    </HBox>
+
+    <TableView fx:id="orderTable" prefHeight="280" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="orderIdColumn" text="Order ID" prefWidth="230"/>
+            <TableColumn fx:id="orderDateColumn" text="Date" prefWidth="240"/>
+            <TableColumn fx:id="itemCountColumn" text="Items" prefWidth="100"/>
+            <TableColumn fx:id="totalColumn" text="Total" prefWidth="140"/>
+        </columns>
+    </TableView>
+
+    <Label text="Order Details"
+           style="-fx-font-size: 17px; -fx-font-weight: bold;"/>
+
+    <TextArea fx:id="orderDetailsArea"
+              editable="false"
+              wrapText="true"
+              prefHeight="210"
+              promptText="Select an order to view its details."/>
+</VBox>
