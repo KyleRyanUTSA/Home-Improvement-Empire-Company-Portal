@@ -3,12 +3,14 @@ package application.controller;
 import application.SceneManager;
 import application.model.CartItem;
 import application.model.Credential;
+import application.model.CredentialLoader;
 import application.model.Product;
 import application.model.ProductLoader;
 import application.model.ProductDatabase;
 import application.model.ShoppingCart;
 import application.model.UserSession;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -700,9 +702,18 @@ public class MainViewController {
         profileDialog.setTitle("Customer Profile");
         profileDialog.setHeaderText(null);
 
+        ButtonType editButtonType =
+                new ButtonType(
+                        "Edit Profile",
+                        ButtonBar.ButtonData.OTHER
+                );
+
         profileDialog.getDialogPane()
                 .getButtonTypes()
-                .add(ButtonType.CLOSE);
+                .addAll(
+                        editButtonType,
+                        ButtonType.CLOSE
+                );
 
         VBox profilePage = new VBox(18);
         profilePage.setPrefWidth(430);
@@ -899,7 +910,209 @@ public class MainViewController {
                         "-fx-padding: 8 18 8 18;"
         );
 
+        Button editButton =
+                (Button) dialogPane.lookupButton(
+                        editButtonType
+                );
+
+        editButton.setStyle(
+                "-fx-background-color: #FFD814;" +
+                        "-fx-text-fill: black;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-padding: 8 18 8 18;"
+        );
+
+        editButton.addEventFilter(
+                ActionEvent.ACTION,
+                event -> {
+                    event.consume();
+
+                    boolean updated =
+                            showEditProfileDialog(user);
+
+                    if (updated) {
+                        addressValue.setText(
+                                user.getAddress()
+                        );
+
+                        String updatedPhone =
+                                user.getPhoneNumber();
+
+                        if (updatedPhone == null
+                                || updatedPhone.isBlank()
+                                || updatedPhone.equals("0000000000")) {
+
+                            updatedPhone = "Not provided";
+                        }
+
+                        phoneValue.setText(updatedPhone);
+
+                        messageLabel.setText(
+                                "Profile updated successfully."
+                        );
+                    }
+                }
+        );
+
         profileDialog.showAndWait();
+    }
+
+    private boolean showEditProfileDialog(
+            Credential user
+    ) {
+        Dialog<ButtonType> editDialog =
+                new Dialog<>();
+
+        editDialog.setTitle("Edit Profile");
+        editDialog.setHeaderText(
+                "Update your account information"
+        );
+
+        ButtonType saveButtonType =
+                new ButtonType(
+                        "Save Changes",
+                        ButtonBar.ButtonData.OK_DONE
+                );
+
+        editDialog.getDialogPane()
+                .getButtonTypes()
+                .addAll(
+                        saveButtonType,
+                        ButtonType.CANCEL
+                );
+
+        GridPane editGrid = new GridPane();
+        editGrid.setHgap(15);
+        editGrid.setVgap(15);
+        editGrid.setPadding(
+                new Insets(20)
+        );
+
+        TextField usernameField =
+                new TextField(user.getUsername());
+
+        usernameField.setEditable(false);
+
+        TextField addressField =
+                new TextField(user.getAddress());
+
+        TextField phoneField =
+                new TextField();
+
+        String currentPhone =
+                user.getPhoneNumber();
+
+        if (currentPhone != null
+                && !currentPhone.equals("0000000000")) {
+
+            phoneField.setText(currentPhone);
+        }
+
+        Label errorLabel = new Label();
+
+        errorLabel.setStyle(
+                "-fx-text-fill: red;"
+        );
+
+        errorLabel.setWrapText(true);
+
+        editGrid.add(new Label("Username:"), 0, 0);
+        editGrid.add(usernameField, 1, 0);
+        editGrid.add(new Label("Address:"), 0, 1);
+        editGrid.add(addressField, 1, 1);
+        editGrid.add(new Label("Phone Number:"), 0, 2);
+        editGrid.add(phoneField, 1, 2);
+        editGrid.add(errorLabel, 0, 3, 2, 1);
+
+        editDialog.getDialogPane()
+                .setContent(editGrid);
+
+        Button saveButton =
+                (Button) editDialog
+                        .getDialogPane()
+                        .lookupButton(
+                                saveButtonType
+                        );
+
+        saveButton.addEventFilter(
+                ActionEvent.ACTION,
+                event -> {
+                    String newAddress =
+                            addressField.getText().trim();
+
+                    String newPhone =
+                            phoneField.getText().trim();
+
+                    if (newAddress.isEmpty()) {
+                        errorLabel.setText(
+                                "Address cannot be empty."
+                        );
+
+                        event.consume();
+                        return;
+                    }
+
+                    if (!newPhone.isEmpty()
+                            && (!newPhone.matches("\\d+")
+                            || newPhone.length() != 10)) {
+
+                        errorLabel.setText(
+                                "Phone number must contain exactly 10 digits."
+                        );
+
+                        event.consume();
+                    }
+                }
+        );
+
+        ButtonType result =
+                editDialog.showAndWait()
+                        .orElse(ButtonType.CANCEL);
+
+        if (result != saveButtonType) {
+            return false;
+        }
+
+        String newAddress =
+                addressField.getText().trim();
+
+        String newPhone =
+                phoneField.getText().trim();
+
+        if (newPhone.isEmpty()) {
+            newPhone = "0000000000";
+        }
+
+        String oldAddress = user.getAddress();
+        String oldPhone = user.getPhoneNumber();
+
+        user.setAddress(newAddress);
+        user.setPhoneNumber(newPhone);
+
+        boolean saved =
+                CredentialLoader.updateCredential(user);
+
+        if (!saved) {
+            user.setAddress(oldAddress);
+            user.setPhoneNumber(oldPhone);
+
+            Alert alert = new Alert(
+                    Alert.AlertType.ERROR
+            );
+
+            alert.setTitle("Profile Update");
+            alert.setHeaderText("Profile could not be saved");
+            alert.setContentText(
+                    "The account information could not be updated."
+            );
+            alert.showAndWait();
+
+            return false;
+        }
+
+        UserSession.setLoggedInUser(user);
+        return true;
     }
     // Logs the current user out
     @FXML
