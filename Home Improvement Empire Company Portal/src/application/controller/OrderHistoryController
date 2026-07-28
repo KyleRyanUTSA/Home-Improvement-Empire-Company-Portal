@@ -1,0 +1,145 @@
+package application.controller;
+
+import application.model.Credential;
+import application.model.Order;
+import application.model.OrderHistoryLoader;
+import application.model.OrderItem;
+import application.model.UserSession;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.cell.PropertyValueFactory;
+
+import java.util.List;
+
+public class OrderHistoryController {
+
+    @FXML
+    private TableView<Order> orderTable;
+
+    @FXML
+    private TableColumn<Order, String> orderIdColumn;
+
+    @FXML
+    private TableColumn<Order, String> orderDateColumn;
+
+    @FXML
+    private TableColumn<Order, Integer> itemCountColumn;
+
+    @FXML
+    private TableColumn<Order, String> totalColumn;
+
+    @FXML
+    private TextArea orderDetailsArea;
+
+    @FXML
+    private Label statusLabel;
+
+    private Runnable returnToShoppingAction;
+
+    @FXML
+    private void initialize() {
+        orderIdColumn.setCellValueFactory(
+                new PropertyValueFactory<>("orderId")
+        );
+        orderDateColumn.setCellValueFactory(
+                new PropertyValueFactory<>("formattedOrderDate")
+        );
+        itemCountColumn.setCellValueFactory(
+                new PropertyValueFactory<>("itemCount")
+        );
+        totalColumn.setCellValueFactory(
+                new PropertyValueFactory<>("formattedTotal")
+        );
+
+        orderTable.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, oldOrder, selectedOrder) ->
+                        showOrderDetails(selectedOrder)
+                );
+
+        loadOrderHistory();
+    }
+
+    private void loadOrderHistory() {
+        Credential user = UserSession.getLoggedInUser();
+
+        if (user == null) {
+            statusLabel.setText("No user is currently logged in.");
+            orderDetailsArea.setText("Please log in to view order history.");
+            return;
+        }
+
+        try {
+            List<Order> orders = OrderHistoryLoader.loadOrdersForUser(
+                    user.getUsername()
+            );
+
+            orderTable.setItems(FXCollections.observableArrayList(orders));
+
+            if (orders.isEmpty()) {
+                statusLabel.setText("You do not have any completed orders yet.");
+                orderDetailsArea.setText("Completed orders will appear here.");
+            } else {
+                statusLabel.setText(
+                        orders.size() + " completed order(s) found."
+                );
+                orderTable.getSelectionModel().selectFirst();
+            }
+        } catch (IllegalStateException exception) {
+            statusLabel.setText("Order history could not be loaded.");
+            orderDetailsArea.setText(exception.getMessage());
+        }
+    }
+
+    private void showOrderDetails(Order order) {
+        if (order == null) {
+            return;
+        }
+
+        StringBuilder details = new StringBuilder();
+
+        details.append("Order ID: ").append(order.getOrderId()).append("\n");
+        details.append("Date: ").append(order.getFormattedOrderDate()).append("\n\n");
+
+        for (OrderItem item : order.getItems()) {
+            details.append(item.getProductName())
+                    .append(" x")
+                    .append(item.getQuantity())
+                    .append(" @ $")
+                    .append(String.format("%.2f", item.getUnitPrice()))
+                    .append(" = $")
+                    .append(String.format("%.2f", item.getSubtotal()))
+                    .append("\n");
+        }
+
+        details.append("\nSubtotal: $")
+                .append(String.format("%.2f", order.getSubtotal()));
+
+        if (order.getDiscountAmount() > 0) {
+            details.append("\nDiscount: -$")
+                    .append(String.format("%.2f", order.getDiscountAmount()));
+        }
+
+        details.append("\nTax: $")
+                .append(String.format("%.2f", order.getTax()));
+        details.append("\nTotal: $")
+                .append(String.format("%.2f", order.getTotal()));
+
+        orderDetailsArea.setText(details.toString());
+    }
+
+    @FXML
+    private void handleBackToShopping() {
+        if (returnToShoppingAction != null) {
+            returnToShoppingAction.run();
+        }
+    }
+
+    public void setReturnToShoppingAction(Runnable returnToShoppingAction) {
+        this.returnToShoppingAction = returnToShoppingAction;
+    }
+}
