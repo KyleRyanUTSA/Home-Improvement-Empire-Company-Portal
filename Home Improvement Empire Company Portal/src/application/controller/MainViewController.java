@@ -186,10 +186,10 @@ public class MainViewController {
                         product.getPrice()
                 )
         );
-
         priceLabel.setStyle(
-                "-fx-font-size: 17px;" +
-                        "-fx-font-weight: bold;"
+                "-fx-font-size: 15px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-text-fill: #222222;"
         );
 
         String stockText = product.isAvailable()
