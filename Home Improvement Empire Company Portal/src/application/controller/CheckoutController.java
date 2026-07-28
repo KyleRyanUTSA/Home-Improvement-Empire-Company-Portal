@@ -179,7 +179,7 @@ public class CheckoutController {
      */
     @FXML
     private void handleContinueShopping() {
-        SceneManager.switchTo("/Data/views/HIELS.fxml");
+        SceneManager.switchTo("/Data/views/MainView.fxml");
 
         if (returnToShoppingAction != null) {
             returnToShoppingAction.run();

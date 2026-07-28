@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import application.controller.OrderHistoryController;
 
 // Controller for the main shopping page
 public class MainViewController {
@@ -965,5 +966,43 @@ public class MainViewController {
         cartButton.setText(
                 "Cart (" + totalItems + ")"
         );
+    }
+
+    @FXML
+    private void handleShowOrderHistory() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource(
+                            "/Data/views/OrderHistory.fxml"
+                    )
+            );
+
+            Parent orderHistoryPage = loader.load();
+
+            OrderHistoryController orderHistoryController =
+                    loader.getController();
+
+            orderHistoryController.setReturnToShoppingAction(() -> {
+                showCatalogPage();
+                updateCartButton();
+
+                messageLabel.setText(
+                        "Back to shopping."
+                );
+            });
+
+            mainBorderPane.setCenter(orderHistoryPage);
+
+            messageLabel.setText(
+                    "Order history opened."
+            );
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            messageLabel.setText(
+                    "The order history page could not be opened."
+            );
+        }
     }
 }
