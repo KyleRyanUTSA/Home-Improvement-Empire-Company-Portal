@@ -165,9 +165,9 @@ Then select the `products` table under the **Browse Data** tab.
 
 ## Team Responsibilities
 
-- **Kyle Ryan:** Login, registration, credential validation, and account creation
+- **Kyle Ryan:** Login, registration, credential validation, and account creation, Checkout screen
 - **Zane Mullinax:** Main shopping view, product catalog, search, sorting, shopping cart, SQLite product database, and integration fixes
-- **Memo Gonzales:** Checkout screen and Order History interface
+- **Memo Gonzales:** Order History interface
 
 ## License
 
