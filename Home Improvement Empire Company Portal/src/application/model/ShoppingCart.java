@@ -9,10 +9,12 @@ public class ShoppingCart {
     private List<CartItem> items;
     private final double TAX_RATE = 0.0825;
     private double discountRate;
+    private double shippingRate;
 
     public ShoppingCart() {
         items = new ArrayList<>();
         discountRate = 0.0;
+        shippingRate = 0.0;
     }
 
     public List<CartItem> getItems() {
@@ -52,7 +54,7 @@ public class ShoppingCart {
             subtotal += item.getSubtotal();
         }
 
-        return subtotal;
+        return subtotal + shippingRate;
     }
 
     // Returns the amount removed by the discount
@@ -107,4 +109,12 @@ public class ShoppingCart {
         items.clear();
         discountRate = 0.0;
     }
+
+	public double getShippingRate() {
+		return shippingRate;
+	}
+
+	public void setShippingRate(double shippingRate) {
+		this.shippingRate = shippingRate;
+	}
 }

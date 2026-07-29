@@ -3,135 +3,90 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="application.controller.CheckoutController"
-      spacing="12"
-      prefWidth="900"
-      prefHeight="650"
-      style="-fx-background-color: white;">
+<VBox prefHeight="650" prefWidth="900" spacing="12" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.CheckoutController">
 
     <padding>
-        <Insets top="20"
-                right="25"
-                bottom="20"
-                left="25"/>
+        <Insets bottom="20" left="25" right="25" top="20" />
     </padding>
 
-    <Label text="Checkout"
-           style="-fx-font-size: 26px; -fx-font-weight: bold;"/>
+    <Label style="-fx-font-size: 26px; -fx-font-weight: bold;" text="Checkout" />
 
-    <Label text="Review the items in your cart:"
-           style="-fx-text-fill: #555555;"/>
+    <Label style="-fx-text-fill: #555555;" text="Review the items in your cart:" />
 
-    <TableView fx:id="cartTable"
-               prefHeight="420"
-               VBox.vgrow="ALWAYS">
+    <TableView fx:id="cartTable" prefHeight="420" VBox.vgrow="ALWAYS">
 
         <columns>
-            <TableColumn fx:id="itemNameColumn"
-                         text="Product"
-                         prefWidth="350"/>
+            <TableColumn fx:id="itemNameColumn" prefWidth="350" text="Product" />
 
-            <TableColumn fx:id="quantityColumn"
-                         text="Quantity"
-                         prefWidth="110"/>
+            <TableColumn fx:id="quantityColumn" prefWidth="110" text="Quantity" />
 
-            <TableColumn fx:id="priceColumn"
-                         text="Price"
-                         prefWidth="140"/>
+            <TableColumn fx:id="priceColumn" prefWidth="140" text="Price" />
 
-            <TableColumn fx:id="totalColumn"
-                         text="Item Total"
-                         prefWidth="150"/>
+            <TableColumn fx:id="totalColumn" prefWidth="150" text="Item Total" />
         </columns>
     </TableView>
 
-    <HBox spacing="8"
-          alignment="CENTER_LEFT">
+    <HBox alignment="CENTER_LEFT" spacing="8">
 
-        <TextField fx:id="promoCodeField"
-                   promptText="Promo code"
-                   prefWidth="170"/>
+        <TextField fx:id="promoCodeField" prefWidth="170" promptText="Promo code" />
 
-        <Button fx:id="applyPromoButton"
-                text="Apply"
-                onAction="#handleApplyPromo"/>
+        <Button fx:id="applyPromoButton" onAction="#handleApplyPromo" text="Apply" />
     </HBox>
 
     <VBox spacing="8" style="-fx-padding: 10; -fx-background-color: #F5F7F5; -fx-background-radius: 6;">
-        <Label text="Delivery Option" style="-fx-font-weight: bold;"/>
-        <HBox spacing="18" alignment="CENTER_LEFT">
-            <RadioButton fx:id="pickupRadioButton"
-                         text="Store Pickup (Free)"
-                         selected="true"
-                         onAction="#handleDeliveryOptionChanged">
+        <Label style="-fx-font-weight: bold;" text="Delivery Option" />
+        <HBox alignment="CENTER_LEFT" spacing="18">
+            <RadioButton fx:id="pickupRadioButton" onAction="#handleDeliveryOptionChanged" selected="true" text="Store Pickup (Free)">
                 <toggleGroup>
-                    <ToggleGroup fx:id="deliveryToggleGroup"/>
+                    <ToggleGroup fx:id="deliveryToggleGroup" />
                 </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="standardDeliveryRadioButton"
-                         text="Standard Delivery (\$9.99)"
-                         toggleGroup="$deliveryToggleGroup"
-                         onAction="#handleDeliveryOptionChanged"/>
-            <RadioButton fx:id="expressDeliveryRadioButton"
-                         text="Express Delivery (\$24.99)"
-                         toggleGroup="$deliveryToggleGroup"
-                         onAction="#handleDeliveryOptionChanged"/>
+            <RadioButton fx:id="standardDeliveryRadioButton" onAction="#handleDeliveryOptionChanged" text="Standard Delivery ($9.99)" toggleGroup="$deliveryToggleGroup" />
+            <RadioButton fx:id="expressDeliveryRadioButton" onAction="#handleDeliveryOptionChanged" text="Express Delivery ($24.99)" toggleGroup="$deliveryToggleGroup" />
         </HBox>
     </VBox>
 
-    <VBox spacing="6" alignment="CENTER_RIGHT">
-        <HBox spacing="20" alignment="CENTER_RIGHT">
-            <Label text="Subtotal:" prefWidth="110"/>
-            <Label fx:id="subtotalLabel" text="\$0.00" prefWidth="90"/>
+    <VBox alignment="CENTER_RIGHT" spacing="6">
+        <HBox alignment="CENTER_RIGHT" spacing="20">
+            <Label prefWidth="110" text="Subtotal:" />
+            <Label fx:id="subtotalLabel" prefWidth="90" text="\$0.00" />
         </HBox>
-        <HBox spacing="20" alignment="CENTER_RIGHT">
-            <Label text="Discount:" prefWidth="110"/>
-            <Label fx:id="discountLabel" text="-\$0.00" prefWidth="90" style="-fx-text-fill: #1F7A3F;"/>
+        <HBox alignment="CENTER_RIGHT" spacing="20">
+            <Label prefWidth="110" text="Discount:" />
+            <Label fx:id="discountLabel" prefWidth="90" style="-fx-text-fill: #1F7A3F;" text="-\$0.00" />
         </HBox>
-        <HBox spacing="20" alignment="CENTER_RIGHT">
-            <Label text="Delivery:" prefWidth="110"/>
-            <Label fx:id="deliveryFeeLabel" text="\$0.00" prefWidth="90"/>
+        <HBox alignment="CENTER_RIGHT" spacing="20">
+            <Label fx:id="deliveryLabel" prefWidth="110" text="Delivery:" />
+            <Label fx:id="deliveryFeeLabel" prefWidth="90" text="\$0.00" />
         </HBox>
-        <HBox spacing="20" alignment="CENTER_RIGHT">
-            <Label text="Tax:" prefWidth="110"/>
-            <Label fx:id="taxLabel" text="\$0.00" prefWidth="90"/>
+        <HBox alignment="CENTER_RIGHT" spacing="20">
+            <Label prefWidth="110" text="Tax:" />
+            <Label fx:id="taxLabel" prefWidth="90" text="\$0.00" />
         </HBox>
-        <HBox spacing="20" alignment="CENTER_RIGHT">
-            <Label text="Total:" prefWidth="110" style="-fx-font-weight: bold;"/>
-            <Label fx:id="totalLabel" text="\$0.00" prefWidth="90" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+        <HBox alignment="CENTER_RIGHT" spacing="20">
+            <Label prefWidth="110" style="-fx-font-weight: bold;" text="Total:" />
+            <Label fx:id="totalLabel" prefWidth="90" style="-fx-font-weight: bold; -fx-font-size: 16px;" text="\$0.00" />
         </HBox>
     </VBox>
 
-    <Region VBox.vgrow="ALWAYS"/>
+    <Region VBox.vgrow="ALWAYS" />
 
-    <HBox spacing="10"
-          alignment="CENTER_RIGHT">
+    <HBox alignment="CENTER_RIGHT" spacing="10">
 
-        <Button fx:id="continueShoppingButton"
-                text="Return to Cart"
-                onAction="#handleContinueShopping"/>
+        <Button fx:id="continueShoppingButton" onAction="#handleContinueShopping" text="Return to Cart" />
 
-        <Button fx:id="cancelButton"
-                text="Cancel"
-                onAction="#handleCancel"/>
+        <Button fx:id="cancelButton" onAction="#handleCancel" text="Cancel" />
 
-        <Button fx:id="completeCheckoutButton"
-                text="Complete Checkout"
-                onAction="#handleCompleteCheckout"
-                style="-fx-background-color: #1F4D2B;
-                       -fx-text-fill: white;
-                       -fx-font-weight: bold;"/>
+        <Button fx:id="completeCheckoutButton" onAction="#handleCompleteCheckout" style="-fx-background-color: #1F4D2B;                        -fx-text-fill: white;                        -fx-font-weight: bold;" text="Complete Checkout" />
     </HBox>
 
 </VBox>

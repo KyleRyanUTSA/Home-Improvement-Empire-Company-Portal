@@ -9,9 +9,11 @@ import application.model.ShoppingCart;
 import application.model.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -48,6 +50,16 @@ public class CheckoutController {
     private Button continueShoppingButton;
     @FXML
     private Button cancelButton;
+    @FXML
+    private Label discountLabel;
+    @FXML
+    private Label deliveryFeeLabel;
+    @FXML 
+    private RadioButton expressDeliveryRadioButton;
+    @FXML 
+    private RadioButton standardDeliveryRadioButton;
+    @FXML 
+    private RadioButton pickupRadioButton;
 
     private ObservableList<CheckoutItem> cartItems;
     private ShoppingCart shoppingCart;
@@ -55,6 +67,9 @@ public class CheckoutController {
 
     @FXML
     public void initialize() {
+    	expressDeliveryRadioButton.setUserData((Double)24.99);
+    	standardDeliveryRadioButton.setUserData((Double)9.99);
+    	pickupRadioButton.setUserData((Double)0.0);
         itemNameColumn.setCellValueFactory(
                 new PropertyValueFactory<>("itemName")
         );
@@ -102,6 +117,12 @@ public class CheckoutController {
             totalLabel.setText("$0.00");
             return;
         }
+        discountLabel.setText(
+                String.format(
+                        "$%.2f",
+                        shoppingCart.getSubtotal() - shoppingCart.getDiscountedSubtotal()
+                )
+        );
 
         subtotalLabel.setText(
                 String.format(
@@ -122,6 +143,11 @@ public class CheckoutController {
                         "$%.2f",
                         shoppingCart.getTotal()
                 )
+        );
+        deliveryFeeLabel.setText(
+                String.format(
+                        "$%.2f",
+                        shoppingCart.getShippingRate())
         );
     }
 
@@ -193,6 +219,8 @@ public class CheckoutController {
             subtotalLabel.setText("$0.00");
             taxLabel.setText("$0.00");
             totalLabel.setText("$0.00");
+            discountLabel.setText("$0.00");
+            deliveryFeeLabel.setText("$0.00");
 
             promoCodeField.setText(
                     "Order completed successfully"
@@ -302,5 +330,12 @@ public class CheckoutController {
         public double getTotal() {
             return quantity * price;
         }
+    }
+    @FXML
+    private void handleDeliveryOptionChanged(ActionEvent e) {
+    	if(shoppingCart.getTotal() >0) {
+    		shoppingCart.setShippingRate((double)((RadioButton) e.getSource()).getUserData());
+    		}
+    	updateTotals();
     }
 }

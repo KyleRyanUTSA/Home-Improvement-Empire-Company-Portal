@@ -31,3 +31,5 @@
 | 27 | Quality of Life Improvement | Fix navigation between the shopping, cart, checkout, and order history screens | Moderate | 5 | Complete | Zane | Return buttons restore the correct shopping or cart view without logging out the user or resetting the active cart. |
 | 28 | Technical Improvement | Migrate product inventory storage from CSV to SQLite | High | 13 | Complete | Zane | On first launch, all 30 products are imported from products.csv into SQLite, and the shopping page loads inventory from the products database table. |
 | 29 | Quality of Life Improvement | Improve Sign in and registration page | low | 5 | Complete | Kyle | Improve the aesthetics of the login page and the registration page, make the formatting match the main view |
+| 30 | Technical Improvement | Checkout Page | High | 5 | Complete | Kyle | Fix checkout screen issue where discount code and delivery labels do not change when clicked |
+| 31 | Technical Improvement | Checkout Page | High | 5 | Complete | Kyle | Fix checkout screen issue where selecting a shipping type will charge for the shipping despite no items in cart |

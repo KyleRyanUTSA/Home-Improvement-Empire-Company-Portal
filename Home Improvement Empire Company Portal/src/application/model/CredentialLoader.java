@@ -41,7 +41,7 @@ public class CredentialLoader {
                     toReturn.add(new Credential(linesplit[0],linesplit[1],linesplit[2],linesplit[3]));
                 }
                 else {
-                    toReturn.add(new Credential(linesplit[0],linesplit[1],linesplit[2]));
+                    toReturn.add(new Credential(linesplit[0],linesplit[1],linesplit[2],"000000000"));
                 }
             }
         } catch (Exception e) {
