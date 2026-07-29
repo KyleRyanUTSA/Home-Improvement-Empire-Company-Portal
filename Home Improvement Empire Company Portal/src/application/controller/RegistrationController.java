@@ -51,21 +51,19 @@ public class RegistrationController {
 		}else if((phoneField.getText().length() != 10 || !phoneField.getText().matches("\\d+")) && !phoneField.getText().equals("")) {
 			errorLabel.setText("Invalid Phone number");
 			
-		}
-		
-			else {
-			if(phoneField.getText().equals("")) {
+		}else {
+				if(phoneField.getText().equals("")||phoneField.getText().equals("\n")) {
 				CredentialLoader.saveCredentials(new Credential(usernameField.getText(),passwordField.getText(),addressField.getText()));
-			}else {
-				CredentialLoader.saveCredentials(new Credential(usernameField.getText(),passwordField.getText(),addressField.getText(),phoneField.getText()));
+				}
+				else {
+					CredentialLoader.saveCredentials(new Credential(usernameField.getText(),passwordField.getText(),addressField.getText(),phoneField.getText()));
+				}
+				SceneManager.switchTo("/Data/views/HIELS.fxml");
 			}
-			
-			
-			SceneManager.switchTo("/Data/views/HIELS.fxml");
 		}
 		
 		
-	}
+	
 	@FXML
 	private void backToSignUpAction(ActionEvent event) {
 		SceneManager.switchTo("/Data/views/HIELS.fxml");

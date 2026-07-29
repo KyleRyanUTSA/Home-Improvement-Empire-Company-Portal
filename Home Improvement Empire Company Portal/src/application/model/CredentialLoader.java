@@ -1,6 +1,7 @@
 package application.model;
 
 import java.io.BufferedReader;
+import java.nio.file.Path;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,50 +18,55 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.shape.Path;
 
 public class CredentialLoader {
 
 
 
 
-    public static ArrayList<Credential> loadCredentials() {
-        InputStream is = CredentialLoader.class.getResourceAsStream("/Data/Credentials/Credentials");
-        ArrayList<Credential> toReturn = new ArrayList<Credential>();
-        if (is == null) {
-            throw new IllegalStateException("Credentials.txt not found on classpath!");
-        }
+	public static ArrayList<Credential> loadCredentials() {
+	    ArrayList<Credential> toReturn = new ArrayList<Credential>();
+	    Path credentialsPath = Paths.get("src", "Data", "Credentials", "Credentials.txt");
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-            String line;
+	    if (!Files.exists(credentialsPath)) {
+	        throw new IllegalStateException("Credentials.txt not found at: " + credentialsPath.toAbsolutePath());
+	    }
 
-            while ((line = reader.readLine()) != null) {
-                //System.out.println(line);
-                String linesplit[] = line.split("\\|");
-                if(linesplit.length == 4) {
-                    toReturn.add(new Credential(linesplit[0],linesplit[1],linesplit[2],linesplit[3]));
-                }
-                else {
-                    toReturn.add(new Credential(linesplit[0],linesplit[1],linesplit[2],"000000000"));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return toReturn;
-    }
+	    try (BufferedReader reader = Files.newBufferedReader(credentialsPath)) {
+	        String line;
+	        while ((line = reader.readLine()) != null) {
+	            if (line.isBlank()) {
+	                continue;
+	            }
+	            //System.out.println(line);
+	            String linesplit[] = line.split("\\|");
+	            if (linesplit.length == 4) {
+	                toReturn.add(new Credential(linesplit[0], linesplit[1], linesplit[2], linesplit[3]));
+	            } else if (linesplit.length == 3) {
+	                toReturn.add(new Credential(linesplit[0], linesplit[1], linesplit[2], "000000000"));
+	            } else {
+	                System.out.println("Skipping malformed line: " + line);
+	            }
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    return toReturn;
+	}
+	
     public static void saveCredentials(Credential cred) {
-        URL credentialsURL  = CredentialLoader.class.getResource("/Data/Credentials/Credentials");
+        Path credentialsPath = Paths.get("src", "Data", "Credentials", "Credentials.txt");
         try {
-            URI credentialsURI = credentialsURL.toURI();
-            Writer credWriter = Files.newBufferedWriter(Paths.get(credentialsURI),StandardOpenOption.CREATE,StandardOpenOption.APPEND);
-
-                credWriter.write("\n"+cred.getUsername()+"|"+cred.getPassword()+"|"+cred.getAddress() + "|" +cred.getPhoneNumber());
-
-            credWriter.close();
-
-        } catch (Exception e) {
-                e.printStackTrace();
+            Files.createDirectories(credentialsPath.getParent());
+            try (Writer credWriter = Files.newBufferedWriter(
+                    credentialsPath, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+                credWriter.write("\n" + cred.getUsername() + "|" + cred.getPassword() + "|"
+                        + cred.getAddress() + "|" + cred.getPhoneNumber());
+                credWriter.close();
+            }
+            System.out.println("Saved to: " + credentialsPath.toAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -69,7 +75,7 @@ public class CredentialLoader {
             return false;
         }
 
-            URL credentialsURL = CredentialLoader.class.getResource("/Data/Credentials/Credentials");
+            URL credentialsURL = CredentialLoader.class.getResource("/Data/Credentials/Credentials.txt");
 
         if (credentialsURL == null) {
             System.err.println("Credentials file could not be found.");
